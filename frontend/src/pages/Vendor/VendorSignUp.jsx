@@ -24,7 +24,10 @@ const VendorSignUpPage = () => {
     email: "",
     password: "",
     phone: "",
-    location: "",
+    location: {
+      latitude: null,
+      longitude: null,
+    },
     foodType: "",
   });
 
@@ -38,7 +41,12 @@ const VendorSignUpPage = () => {
     if (!formData.password) return toast.error("Password is required");
     if (formData.password.length < 6) return toast.error("Password must be at least 6 characters");
     if (!formData.phone.trim()) return toast.error("Phone number is required");
-    if (!formData.location.trim()) return toast.error("Location is required");
+    if (
+      !formData.location.latitude ||
+      !formData.location.longitude
+    ) {
+      return toast.error("Location is required");
+    }
     if (!formData.foodType.trim()) return toast.error("Please select the type of food sold");
 
     return true;
@@ -172,24 +180,55 @@ const VendorSignUpPage = () => {
 
             {/* Location */}
             <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium">Location</span>
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <MapPin className="size-5 text-base-content/40" />
-                </div>
-                <input
-                  type="text"
-                  className="input input-bordered w-full pl-10"
-                  placeholder="Enter address or use GPS"
-                  value={formData.location}
-                  onChange={(e) =>
-                    setFormData({ ...formData, location: e.target.value })
-                  }
-                />
-              </div>
-            </div>
+        <label className="label">
+          <span className="label-text font-medium">Location</span>
+        </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <MapPin className="size-5 text-base-content/40" />
+          </div>
+          <input
+            type="text"
+            className="input input-bordered w-full pl-10"
+            value={
+              formData.location.latitude && formData.location.longitude
+                ? `${formData.location.latitude.toFixed(5)}, ${formData.location.longitude.toFixed(5)}`
+                : ""
+            }
+            placeholder="Click 'Get Location'"
+            disabled
+          />
+          <button
+            type="button"
+            className="btn btn-sm btn-outline absolute right-2 top-1/2 -translate-y-1/2"
+            onClick={() => {
+              if (!navigator.geolocation) {
+                toast.error("Geolocation not supported");
+                return;
+              }
+
+              toast.loading("Getting your location...");
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  toast.dismiss();
+                  const { latitude, longitude } = position.coords;
+                  setFormData((prev) => ({
+                    ...prev,
+                    location: { latitude, longitude },
+                  }));
+                  toast.success("Location captured!");
+                },
+                (error) => {
+                  toast.dismiss();
+                  toast.error("Failed to get location: " + error.message);
+                }
+              );
+            }}
+          >
+            Get Location
+          </button>
+        </div>
+      </div>
 
             {/* Type of Food Sold */}
             <div className="form-control">

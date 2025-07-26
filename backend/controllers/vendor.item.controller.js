@@ -12,11 +12,7 @@ const getItemsByCategory = (category) => async (req, res) => {
 };
 const getAllItemsGroupedByCategory = async (req, res) => {
   try {
-   
-
-    const groupedItems = await Item.find();
-
-    
+      const groupedItems = await Item.find();
     
     return res.status(200).json(groupedItems);
   } catch (error) {

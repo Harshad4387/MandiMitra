@@ -1,7 +1,7 @@
 const Item = require('../models/item.model');
 const cloudinary = require('../utlis/cloudinary')
 const Order = require('../models/order.model');
-
+const User = require('../models/user.model');
 const addItem = async (req, res) => {
   try {
     const supplierId = req.user._id;
@@ -76,16 +76,30 @@ const addItem = async (req, res) => {
 
 const getSupplierOrders = async (req, res) => {
   try {
-    const supplierId = req.user._id; 
+    const supplierId = req.user._id;
 
     const orders = await Order.find({ supplierId, status: 'pending' })
-                              .populate('vendorId', 'name location'); // optional, to show vendor info
-    res.json(orders);
+      .populate('vendorId', 'name') // Only fetch customer name
+      .select('vendorId deliveryAddress items'); // Only include needed fields
+
+    const formattedOrders = orders.map(order => ({
+      customerName: order.vendorId.name,
+      deliveryAddress: order.deliveryAddress,
+      items: order.items.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        pricePerUnit: item.pricePerUnit,
+        totalPrice: item.totalPrice
+      }))
+    }));
+
+    res.json(formattedOrders);
+
   } catch (err) {
+    console.error("Error fetching supplier orders:", err);
     res.status(500).json({ error: 'Error fetching supplier orders' });
   }
 };
-
 
 
 const updateOrderStatus = async (req, res) => {
@@ -104,7 +118,6 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-// 3. Update delivery time or mark order as in_transit
 const updateDeliveryDetails = async (req, res) => {
   try {
     const { id } = req.params;

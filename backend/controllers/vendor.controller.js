@@ -1,8 +1,12 @@
 const Item = require("../models/item.model");
 const Order = require("../models/order.model");
 const Cart = require("../models/cart.model");
+const sendOrderMail = require('../utlis/sendOrderMail');
+const User = require('../models/user.model'); 
 
 const placeOrder = async (req, res) => {
+    console.log(process.env.EMAIL_USER);
+    
   try {
     const vendorId = req.user._id;
     const cart = await Cart.findOne({ vendorId });
@@ -67,6 +71,19 @@ const placeOrder = async (req, res) => {
 
     // Delete cart after order is placed
     await Cart.findOneAndDelete({ vendorId });
+    const vendor = await User.findById(vendorId);
+const supplier = await User.findById(supplierId);
+
+ if (vendor && vendor.email && supplier) {
+  await sendOrderMail({
+    vendor,
+    supplier,
+    items: orderItems,
+    totalAmount,
+    deliveryMethod,
+    deliveryAddress
+  });
+}
 
     return res.status(201).json({ message: "Order placed successfully", orderId: newOrder._id });
 
@@ -85,7 +102,7 @@ const searchItemsByName = async (req, res) => {
     }
     const items = await Item.find({ name: { $regex: name, $options: 'i' } });
 
-    return res.status(200).json( items );
+    return res.status(200).json(items);
   } catch (error) {
     console.error('Error in searchItemsByName:', error.message);
     return res.status(500).json({ message: 'Internal server error' });
