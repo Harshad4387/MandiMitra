@@ -191,28 +191,6 @@ const login = async (req, res) => {
             createdAt: user.createdAt
         };
 
-        if (user.role === 'vendor') {
-            responseData = {
-                ...responseData,
-                name: user.name,
-                foodType: user.foodType,
-                location: user.location,
-                loyaltyPoints: user.loyaltyPoints
-            };
-        }
-
-        if (user.role === 'supplier') {
-            responseData = {
-                ...responseData,
-                businessName: user.businessName,
-                ownerName: user.ownerName,
-                businessAddress: user.businessAddress,
-                gstNumber: user.gstNumber,
-                deliveryMethod: user.deliveryMethod,
-                serviceArea: user.serviceArea
-            };
-        }
-
         return res.status(200).json({
             message: "Login successful",
             user: responseData
