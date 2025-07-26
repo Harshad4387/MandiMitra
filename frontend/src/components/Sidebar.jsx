@@ -4,7 +4,7 @@ import { Home, Search, ShoppingCart, Gift, ClipboardList, BarChart2, HelpCircle,
 const menuItems = [
   { to: '/vendor/homepage', label: 'HomePage', icon: <Home size={18} /> },
   { to: '/vendor/search', label: 'Search Product', icon: <Search size={18} /> },
-  { to: '/vendor/order', label: 'Place Order', icon: <ShoppingCart size={18} /> },
+  { to: '/vendor/order', label: 'View Cart', icon: <ShoppingCart size={18} /> },
   { to: '/vendor/loyalty', label: 'Loyalty Points', icon: <Gift size={18} /> },
   { to: '/vendor/orders', label: 'My Orders', icon: <ClipboardList size={18} /> },
   { to: '/vendor/analytics', label: 'Analytics', icon: <BarChart2 size={18} /> },

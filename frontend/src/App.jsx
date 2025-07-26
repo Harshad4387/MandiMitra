@@ -16,7 +16,7 @@ import SupplierSignUpPage from "./pages/Supplier/SupplierSignUp.jsx";
 import VendorLayout from "./layouts/VenderLayout.jsx";
 import VendorDashboard from "./pages/Vendor/VendorHomePage.jsx";
 import SearchProduct from "./pages/Vendor/SearchProduct.jsx";
-import PlaceOrder from "./pages/Vendor/PlaceOrder.jsx";
+import PlaceOrder from "./pages/Vendor/ViewCart.jsx";
 import LoyaltyPoints from "./pages/Vendor/LoyaltyPoints.jsx";
 import MyOrders from "./pages/Vendor/MyOrders.jsx";
 import Analytics from "./pages/Vendor/Analytics.jsx";
