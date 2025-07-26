@@ -85,6 +85,8 @@ const getSupplierOrders = async (req, res) => {
     const formattedOrders = orders.map(order => ({
       customerName: order.vendorId.name,
       deliveryAddress: order.deliveryAddress,
+      latitude : order.vendorId.location.latitude,
+      longitude : order.vendorId.location.latitude,
       items: order.items.map(item => ({
         name: item.name,
         quantity: item.quantity,

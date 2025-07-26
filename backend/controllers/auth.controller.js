@@ -50,13 +50,16 @@ const signup = async (req, res) => {
           message: "Name, food type, and location are required for vendors" 
         });
       }
-      
-      // Validate location structure
-      // if (!location.address || typeof location.lat !== 'number' || typeof location.lng !== 'number') {
-      //   return res.status(400).json({ 
-      //     message: "Location must include address, latitude, and longitude" 
-      //   });
-      // }
+
+    
+      if ( 
+        typeof location.latitude !== 'number' || 
+        typeof location.longitude !== 'number'
+      ) {
+        return res.status(400).json({ 
+          message: "Location must include address, latitude (number), and longitude (number)" 
+        });
+      }
     }
 
     if (role === 'supplier') {
@@ -69,7 +72,7 @@ const signup = async (req, res) => {
       // Validate delivery method
       if (!['Delivery', 'Pickup', 'Both'].includes(deliveryMethod)) {
         return res.status(400).json({ 
-          message: "Delivery method must be 'delivery', 'pickup', or 'both'" 
+          message: "Delivery method must be 'Delivery', 'Pickup', or 'Both'" 
         });
       }
     }
@@ -82,7 +85,7 @@ const signup = async (req, res) => {
       });
     }
 
-    // Create user object based on role
+    
     const userData = {
       role,
       email,
@@ -94,8 +97,11 @@ const signup = async (req, res) => {
     if (role === 'vendor') {
       userData.name = name;
       userData.foodType = foodType;
-      userData.location = location;
-      userData.loyaltyPoints = 0; // Default value
+      userData.location = {
+        latitude: location.latitude,
+        longitude: location.longitude
+      };
+      userData.loyaltyPoints = 0;
     }
 
     if (role === 'supplier') {
@@ -104,8 +110,7 @@ const signup = async (req, res) => {
       userData.businessAddress = businessAddress;
       userData.deliveryMethod = deliveryMethod;
       userData.serviceArea = serviceArea;
-      
-      // GST number is optional
+
       if (gstNumber) {
         userData.gstNumber = gstNumber;
       }
@@ -117,7 +122,7 @@ const signup = async (req, res) => {
     // Generate JWT token
     await generatejwt(newUser._id, res);
 
-    // Prepare response data based on role
+    // Prepare response
     let responseData = {
       id: newUser._id,
       role: newUser.role,
@@ -130,7 +135,7 @@ const signup = async (req, res) => {
         ...responseData,
         name: newUser.name,
         foodType: newUser.foodType,
-        // location: newUser.location,
+        location: newUser.location,
         loyaltyPoints: newUser.loyaltyPoints
       };
     }
@@ -159,6 +164,7 @@ const signup = async (req, res) => {
     });
   }
 };
+
 
 
 const login = async (req, res) => {
