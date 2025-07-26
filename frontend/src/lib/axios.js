@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://lh6zvgwv-3000.inc1.devtunnels.ms/api",
+  baseURL: "http://localhost:3000/api",
   withCredentials: true,
 });

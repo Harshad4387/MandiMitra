@@ -49,7 +49,7 @@ const App = () => {
         <Route path="/login-supplier" element={!authUser ? <SupplierLoginPage /> : <Navigate to="/" />} />
         <Route path="/signup-vendor" element={!authUser ? <VendorSignUpPage /> : <Navigate to="/" />} />
         <Route path="/login-vendor" element={!authUser ? <VendorLoginPage /> : <Navigate to="/" />} />
-        <Route path="/supplier-dashboard" element={}
+        {/* <Route path="/supplier-dashboard" element={} */}
         <Route path="/add-item" element={<AddItemForm />} />
         <Route path="/view-orders" element={<ViewOrdersPanel />} />
         <Route path="/ratings-reviews" element={<RatingsAndReviews />} />
