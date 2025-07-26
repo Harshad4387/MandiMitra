@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-
 const sendOrderMail = async ({ vendor, supplier, items, totalAmount, deliveryMethod, deliveryAddress }) => {
   try {
     const transporter = nodemailer.createTransport({

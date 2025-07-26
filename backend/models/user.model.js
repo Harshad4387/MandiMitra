@@ -17,9 +17,11 @@ const userSchema = new mongoose.Schema({
   // Vendor-specific
   name: { type: String },
   foodType: { type: String },
-  location: {
-    address: String
+   location: {
+    latitude: { type: Number },
+    longitude: { type: Number }
   },
+
   loyaltyPoints: { type: Number, default: 0 },
 
   // Supplier-specific
