@@ -161,35 +161,70 @@ const signup = async (req, res) => {
 };
 
 
-const login = async(req,res)=>{
-    const {email , password} = req.body;
-    if(!email || !password){
-        return res.status(400).json({message : "all feilds aee required"});
-    }
-    try {
-        const user = await User.findOne({email});
-        if(!user){
-            return res.status(400).json({message : "Invalid credantils"});
-        }
-        const ispasswordmatch  = await bcrypt.compare(password , user.password);
-        if(!ispasswordmatch){
-            return res.status(400).json({message : "Invalid credantils"});
-        }
-       
-           await generatejwt(user._id,res);
-            return res.status(200).json({
-                fullName  : user.fullName,
-                id : user._id,
-                email : user.email,
-                profilepic : user.profilepic
-            });
-  
-    } catch (error) {
-        console.log("error in login controller " , error.message);
-        res.status(500).json({message : "internal server error"});
+const login = async (req, res) => {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+        return res.status(400).json({ message: "All fields are required" });
     }
     
-}
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+        
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        if (!isPasswordMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+        
+        // Generate JWT token
+        await generatejwt(user._id, res);
+        
+        // Prepare response data based on role
+        let responseData = {
+            id: user._id,
+            role: user.role,
+            email: user.email,
+            phone: user.phone,
+            createdAt: user.createdAt
+        };
+
+        if (user.role === 'vendor') {
+            responseData = {
+                ...responseData,
+                name: user.name,
+                foodType: user.foodType,
+                location: user.location,
+                loyaltyPoints: user.loyaltyPoints
+            };
+        }
+
+        if (user.role === 'supplier') {
+            responseData = {
+                ...responseData,
+                businessName: user.businessName,
+                ownerName: user.ownerName,
+                businessAddress: user.businessAddress,
+                gstNumber: user.gstNumber,
+                deliveryMethod: user.deliveryMethod,
+                serviceArea: user.serviceArea
+            };
+        }
+
+        return res.status(200).json({
+            message: "Login successful",
+            user: responseData
+        });
+        
+    } catch (error) {
+        console.log("Error in login controller:", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
 const logout = async(req,res)=>{
 try {   
     const options = {
