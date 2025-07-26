@@ -240,133 +240,55 @@ try {
 }
     
 }
-const updateprofile = async (req, res) => {
-    try {
-        const { profilePic, ...otherFields } = req.body;
-        const userid = req.user._id;
 
-        // Get current user to determine role
-        const currentUser = await User.findById(userid);
-        if (!currentUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
+   const updateprofile = async (req, res) => {
+  try {
+    const userId = req.user._id;
 
-        const updateData = {};
-
-        // Handle profile picture update
-        if (profilePic) {
-            const uploadedimage = await cloudinary.uploader.upload(profilePic);
-            updateData.profilePic = uploadedimage.secure_url;
-        }
-
-        // Handle role-specific field updates
-        if (currentUser.role === 'vendor') {
-            // Vendor-specific fields that can be updated
-            const { name, foodType, location, phone } = otherFields;
-            
-            if (name) updateData.name = name;
-            if (foodType) updateData.foodType = foodType;
-            if (phone) updateData.phone = phone;
-            
-            // Validate and update location if provided
-            if (location) {
-                if (location.address && typeof location.lat === 'number' && typeof location.lng === 'number') {
-                    updateData.location = location;
-                } else {
-                    return res.status(400).json({ 
-                        message: "Location must include address, latitude, and longitude" 
-                    });
-                }
-            }
-        }
-
-        if (currentUser.role === 'supplier') {
-            // Supplier-specific fields that can be updated
-            const { 
-                businessName, 
-                ownerName, 
-                businessAddress, 
-                gstNumber, 
-                deliveryMethod, 
-                serviceArea,
-                phone 
-            } = otherFields;
-            
-            if (businessName) updateData.businessName = businessName;
-            if (ownerName) updateData.ownerName = ownerName;
-            if (businessAddress) updateData.businessAddress = businessAddress;
-            if (gstNumber) updateData.gstNumber = gstNumber;
-            if (serviceArea) updateData.serviceArea = serviceArea;
-            if (phone) updateData.phone = phone;
-            
-            // Validate delivery method if provided
-            if (deliveryMethod) {
-                if (['delivery', 'pickup', 'both'].includes(deliveryMethod)) {
-                    updateData.deliveryMethod = deliveryMethod;
-                } else {
-                    return res.status(400).json({ 
-                        message: "Delivery method must be 'delivery', 'pickup', or 'both'" 
-                    });
-                }
-            }
-        }
-
-        // Check if there are any fields to update
-        if (Object.keys(updateData).length === 0) {
-            return res.status(400).json({ 
-                message: "No valid fields provided for update" 
-            });
-        }
-
-        // Update user with new data
-        const updatedUser = await User.findByIdAndUpdate(
-            userid, 
-            updateData, 
-            { new: true, runValidators: true }
-        ).select('-password'); // Exclude password from response
-
-        // Prepare response data based on role
-        let responseData = {
-            id: updatedUser._id,
-            role: updatedUser.role,
-            email: updatedUser.email,
-            phone: updatedUser.phone,
-            profilePic: updatedUser.profilePic,
-            createdAt: updatedUser.createdAt
-        };
-
-        if (updatedUser.role === 'vendor') {
-            responseData = {
-                ...responseData,
-                name: updatedUser.name,
-                foodType: updatedUser.foodType,
-                location: updatedUser.location,
-                loyaltyPoints: updatedUser.loyaltyPoints
-            };
-        }
-
-        if (updatedUser.role === 'supplier') {
-            responseData = {
-                ...responseData,
-                businessName: updatedUser.businessName,
-                ownerName: updatedUser.ownerName,
-                businessAddress: updatedUser.businessAddress,
-                gstNumber: updatedUser.gstNumber,
-                deliveryMethod: updatedUser.deliveryMethod,
-                serviceArea: updatedUser.serviceArea
-            };
-        }
-
-        res.status(200).json({
-            message: "Profile updated successfully",
-            user: responseData
-        });
-
-    } catch (error) {
-        console.log("Error in updateprofile controller:", error.message);
-        res.status(500).json({ message: "Internal server error" });
+    const user = await User.findById(userId).select('-password -profilePic');
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    // Basic response structure
+    let responseData = {
+      id: user._id,
+      role: user.role,
+      email: user.email,
+      phone: user.phone,
+      createdAt: user.createdAt
+    };
+
+    // Role-specific data
+    if (user.role === 'vendor') {
+      responseData = {
+        ...responseData,
+        name: user.name,
+        foodType: user.foodType,
+        location: user.location,
+        loyaltyPoints: user.loyaltyPoints
+      };
+    }
+
+    if (user.role === 'supplier') {
+      responseData = {
+        ...responseData,
+        businessName: user.businessName,
+        ownerName: user.ownerName,
+        businessAddress: user.businessAddress,
+        gstNumber: user.gstNumber,
+        deliveryMethod: user.deliveryMethod,
+        serviceArea: user.serviceArea
+      };
+    }
+
+    return res.status(200).json({ user: responseData });
+  } catch (error) {
+    console.error("Error in getProfile controller:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
+
 
 
 const checkauth = async(req,res)=>{
