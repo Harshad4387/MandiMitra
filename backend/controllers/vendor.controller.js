@@ -1,6 +1,8 @@
 const Item = require("../models/item.model");
 const Order = require("../models/order.model");
 const Cart = require("../models/cart.model");
+const sendOrderMail = require('../utlis/sendOrderMail');
+const User = require('../models/user.model'); 
 
 const placeOrder = async (req, res) => {
   try {
@@ -67,6 +69,19 @@ const placeOrder = async (req, res) => {
 
     // Delete cart after order is placed
     await Cart.findOneAndDelete({ vendorId });
+    const vendor = await User.findById(vendorId);
+const supplier = await User.findById(supplierId);
+
+ if (vendor && vendor.email && supplier) {
+  await sendOrderMail({
+    vendor,
+    supplier,
+    items: orderItems,
+    totalAmount,
+    deliveryMethod,
+    deliveryAddress
+  });
+}
 
     return res.status(201).json({ message: "Order placed successfully", orderId: newOrder._id });
 
