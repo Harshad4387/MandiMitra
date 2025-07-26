@@ -8,6 +8,21 @@ const itemSchema = new mongoose.Schema({
   stock: { type: Number, default: 0 },
   deliveryAvailable: { type: Boolean, default: false },
   imageUrl: { type: String },
+  foodtype: { type: String },
+
+  // ✅ New category field
+  category: {
+    type: String,
+    enum: [
+      'Fresh Produce',
+      'Grains and Flours',
+      'Spices and Condiments',
+      'Oils and Fats',
+      'Packaging and Disposables'
+    ],
+    required: true
+  },
+
   createdAt: { type: Date, default: Date.now }
 });
 

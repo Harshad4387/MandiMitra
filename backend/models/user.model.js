@@ -18,8 +18,6 @@ const userSchema = new mongoose.Schema({
   name: { type: String },
   foodType: { type: String },
   location: {
-    lat: Number,
-    lng: Number,
     address: String
   },
   loyaltyPoints: { type: Number, default: 0 },
