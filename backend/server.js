@@ -35,24 +35,6 @@ app.use("/api/vendor/item", vendoritem);
 const vendorroute = require("./routes/vendor.route.js");
 app.use("/api/vendor",vendorroute);
 
-
-
-const User = require('./models/cart.model.js'); // Adjust path if needed
-
-// DELETE all users
-app.delete('/users/delete-all', async (req, res) => {
-  try {
-    const result = await User.deleteMany({});
-    res.status(200).json({
-      message: 'All users deleted successfully',
-      deletedCount: result.deletedCount
-    });
-  } catch (error) {
-    console.error('Error deleting users:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
-
 const port = process.env.PORT
 app.listen(port,'0.0.0.0', ()=>{
     console.log(`server is running on port ${port}`);
