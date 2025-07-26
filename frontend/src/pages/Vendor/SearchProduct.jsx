@@ -12,12 +12,14 @@ const SearchProduct = () => {
 
   useEffect(() => {
     const fetchItems = async () => {
-      if (!query) return;
-
       setLoading(true);
       try {
-        const res = await axiosInstance.get(`/vendor/search?name=${query}`);
-        setItems(res.data.items || []);
+        const url = query
+          ? `/vendor/search?name=${encodeURIComponent(query)}`
+          : "/vendor/item/all-categorized-items"; // endpoint to fetch all items
+        const res = await axiosInstance.get(url);
+        console.log(res)
+        setItems(res.data || []);
       } catch (error) {
         console.error("Failed to fetch items:", error);
       } finally {
@@ -30,13 +32,15 @@ const SearchProduct = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchInput.trim()) {
-      navigate(`/vendor/search?name=${encodeURIComponent(searchInput.trim())}`);
-    }
+    navigate(
+      searchInput.trim()
+        ? `/vendor/search?name=${encodeURIComponent(searchInput.trim())}`
+        : "/vendor/search"
+    );
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
       <form onSubmit={handleSearch} className="mb-6 flex gap-3 items-center">
         <input
           type="text"
@@ -53,16 +57,21 @@ const SearchProduct = () => {
         </button>
       </form>
 
-      <h1 className="text-2xl font-semibold mb-4">Results for "{query}"</h1>
+      <h1 className="text-2xl font-semibold mb-4">
+        {query ? `Results for "${query}"` : "All Products"}
+      </h1>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-gray-500">Loading...</p>
       ) : items.length === 0 ? (
         <p className="text-gray-500">No items found.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((item) => (
-            <div key={item._id} className="bg-white rounded-xl shadow-md overflow-hidden">
+            <div
+              key={item._id}
+              className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition"
+            >
               <img
                 src={item.imageUrl}
                 alt={item.name}

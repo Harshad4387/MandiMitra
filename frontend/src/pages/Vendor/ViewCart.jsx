@@ -9,7 +9,7 @@ const ViewCart = () => {
   const [showModal, setShowModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [deliveryAddress, setDeliveryAddress] = useState("");
-  const [deliveryMethod, setDeliveryMethod] = useState("Home Delivery");
+  const [deliveryMethod, setDeliveryMethod] = useState("delivery");
 
   const fetchCart = async () => {
     try {
@@ -24,7 +24,7 @@ const ViewCart = () => {
 
   const handleClearCart = async () => {
     try {
-      await axiosInstance.delete("vendor/cart/clearcart");
+      await axiosInstance.delete("vendor/cart/clear");
       setCartItems([]);
     } catch (err) {
       console.error("Failed to clear cart:", err);
@@ -36,7 +36,6 @@ const ViewCart = () => {
       await axiosInstance.post("vendor/place-order", {
         deliveryMethod,
         deliveryAddress,
-        items: cartItems,
       });
 
       setShowModal(false);
