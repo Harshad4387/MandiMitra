@@ -12,20 +12,7 @@ const getItemsByCategory = (category) => async (req, res) => {
 };
 const getAllItemsGroupedByCategory = async (req, res) => {
   try {
-    const categories = [
-      'Fresh Produce',
-      'Grains and Flours',
-      'Spices and Condiments',
-      'Oils and Fats',
-      'Packaging and Disposables'
-    ];
-
-    const groupedItems = {};
-
-    for (const category of categories) {
-      const items = await Item.find({ category });
-      groupedItems[category] = items;
-    }
+      const groupedItems = await Item.find();
     
     return res.status(200).json(groupedItems);
   } catch (error) {
