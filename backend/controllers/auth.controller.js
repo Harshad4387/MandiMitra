@@ -219,7 +219,7 @@ try {
     
 }
 
-   const updateprofile = async (req, res) => {
+const profile = async (req, res) => {
   try {
     const userId = req.user._id;
 
@@ -279,4 +279,4 @@ const checkauth = async(req,res)=>{
     }
 }
 
-module.exports = {signup , login , logout , updateprofile,checkauth};
+module.exports = {signup , login , logout , profile,checkauth};
