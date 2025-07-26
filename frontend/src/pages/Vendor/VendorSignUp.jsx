@@ -12,40 +12,48 @@ import {
   MapPin,
   UtensilsCrossed,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthImagePattern from "../../components/AuthImagePattern";
 import toast from "react-hot-toast";
+
 
 const VendorSignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     email: "",
     password: "",
-    phoneNumber: "",
+    phone: "",
     location: "",
     foodType: "",
   });
 
   const { signup, isSigningUp } = useAuthStore();
+  const navigate = useNavigate();
 
   const validateForm = () => {
-    if (!formData.fullName.trim()) return toast.error("Full name is required");
+    if (!formData.name.trim()) return toast.error("Full name is required");
     if (!formData.email.trim()) return toast.error("Email is required");
     if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error("Invalid email format");
     if (!formData.password) return toast.error("Password is required");
     if (formData.password.length < 6) return toast.error("Password must be at least 6 characters");
-    if (!formData.phoneNumber.trim()) return toast.error("Phone number is required");
+    if (!formData.phone.trim()) return toast.error("Phone number is required");
     if (!formData.location.trim()) return toast.error("Location is required");
     if (!formData.foodType.trim()) return toast.error("Please select the type of food sold");
 
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = validateForm();
-    if (success === true) signup(formData);
+    const isValid = validateForm();
+
+    if (isValid === true) {
+      const success = await signup({ ...formData, role: "vendor" });
+      if (success) {
+        navigate("/login");
+      }
+    }
   };
 
   return (
@@ -80,9 +88,9 @@ const VendorSignUpPage = () => {
                   type="text"
                   className="input input-bordered w-full pl-10"
                   placeholder="John Doe"
-                  value={formData.fullName}
+                  value={formData.name}
                   onChange={(e) =>
-                    setFormData({ ...formData, fullName: e.target.value })
+                    setFormData({ ...formData, name: e.target.value })
                   }
                 />
               </div>
@@ -154,9 +162,9 @@ const VendorSignUpPage = () => {
                   type="tel"
                   className="input input-bordered w-full pl-10"
                   placeholder="1234567890"
-                  value={formData.phoneNumber}
+                  value={formData.phone}
                   onChange={(e) =>
-                    setFormData({ ...formData, phoneNumber: e.target.value })
+                    setFormData({ ...formData, phone: e.target.value })
                   }
                 />
               </div>

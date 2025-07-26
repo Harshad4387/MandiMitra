@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
   gstNumber: { type: String },
   deliveryMethod: {
     type: String,
-    enum: ['delivery', 'pickup', 'both']
+    enum: ['Delivery', 'Pickup', 'Both']
   },
   serviceArea: { type: String } 
 });
