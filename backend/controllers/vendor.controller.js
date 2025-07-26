@@ -5,6 +5,8 @@ const sendOrderMail = require('../utlis/sendOrderMail');
 const User = require('../models/user.model'); 
 
 const placeOrder = async (req, res) => {
+    console.log(process.env.EMAIL_USER);
+    
   try {
     const vendorId = req.user._id;
     const cart = await Cart.findOne({ vendorId });

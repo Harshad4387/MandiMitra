@@ -3,19 +3,30 @@ import { useAuthStore } from "../../store/useAuthStore.js";
 import AuthImagePattern from "../../components/AuthImagePattern.jsx";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const SupplierLoginPage = () => {
+const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const { login, isLoggingIn } = useAuthStore();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    login(formData);
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  await login(formData); // Wait for login to finish
+
+  const { authUser } = useAuthStore.getState(); // Direct access to latest store state
+
+  if (authUser?.role === "vendor") {
+    navigate("/vendor/homepage");
+  } else if (authUser?.role === "supplier") {
+    navigate("/supplier/dashboard");
+  }
+};
+
 
   return (
     <div className="h-screen grid lg:grid-cols-2">
@@ -31,8 +42,8 @@ const SupplierLoginPage = () => {
               >
                 <MessageSquare className="w-6 h-6 text-primary" />
               </div>
-              <h1 className="text-2xl font-bold mt-2">Welcome Back Supplier</h1>
-              <p className="text-base-content/60">Sign in to your Supplier account</p>
+              <h1 className="text-2xl font-bold mt-2">Welcome Back User</h1>
+              <p className="text-base-content/60">Sign in to your account</p>
             </div>
           </div>
 
@@ -99,7 +110,15 @@ const SupplierLoginPage = () => {
 
           <div className="text-center">
             <p className="text-base-content/60">
-              Don&apos;t have an account?{" "}
+              Don&apos;t have an Vendor account?{" "}
+              <Link to="/signup-vendor" className="link link-primary">
+                Create account
+              </Link>
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-base-content/60">
+              Don&apos;t have an Supplier account?{" "}
               <Link to="/signup-supplier" className="link link-primary">
                 Create account
               </Link>
@@ -116,4 +135,4 @@ const SupplierLoginPage = () => {
     </div>
   );
 };
-export default SupplierLoginPage;
+export default LoginPage;

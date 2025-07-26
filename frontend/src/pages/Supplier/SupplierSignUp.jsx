@@ -49,11 +49,15 @@ const SupplierSignUpPage = () => {
     return true;
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
-  const success = validateForm();
-  if (success === true) {
-    signup({ ...formData, role: "supplier" }); // 👈 hardcoded role here
+  const isValid = validateForm();
+
+  if (isValid === true) {
+    const success = await signup({ ...formData, role: "supplier" }); // or "vendor"
+    if (success) {
+      navigate("/login");
+    }
   }
 };
 
