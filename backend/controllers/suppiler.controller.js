@@ -1,7 +1,7 @@
 const Item = require('../models/item.model');
 const cloudinary = require('../utlis/cloudinary')
 const Order = require('../models/order.model');
-
+const User = require('../models/user.model');
 const addItem = async (req, res) => {
   try {
     const supplierId = req.user._id;
@@ -77,9 +77,10 @@ const addItem = async (req, res) => {
 const getSupplierOrders = async (req, res) => {
   try {
     const supplierId = req.user._id; 
+    const user = await User.findById(supplierId);
 
     const orders = await Order.find({ supplierId, status: 'pending' })
-                              .populate('vendorId', 'name location'); // optional, to show vendor info
+    console.log(orders);
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: 'Error fetching supplier orders' });
@@ -104,7 +105,6 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-// 3. Update delivery time or mark order as in_transit
 const updateDeliveryDetails = async (req, res) => {
   try {
     const { id } = req.params;
