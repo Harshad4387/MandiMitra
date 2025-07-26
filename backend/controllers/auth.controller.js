@@ -18,7 +18,8 @@ const signup = async (req, res) => {
       businessAddress,
       gstNumber,
       deliveryMethod,
-      serviceArea
+      serviceArea,
+      location
     } = req.body;
 
     // Basic validation
@@ -85,7 +86,7 @@ const signup = async (req, res) => {
     const userData = {
       role,
       email,
-      password, // Will be hashed by pre-save middleware
+      password, 
       phone
     };
 
@@ -110,7 +111,6 @@ const signup = async (req, res) => {
       }
     }
 
-    // Create new user
     const newUser = new User(userData);
     await newUser.save();
 
@@ -130,7 +130,7 @@ const signup = async (req, res) => {
         ...responseData,
         name: newUser.name,
         foodType: newUser.foodType,
-        location: newUser.location,
+        // location: newUser.location,
         loyaltyPoints: newUser.loyaltyPoints
       };
     }

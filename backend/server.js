@@ -6,8 +6,8 @@ app.use(express.json());
 const cors = require("cors");
 
 app.use(cors({
-    origin : "http://localhost:5173",
-    credentials :true 
+    origin : "*",
+    credentials :false 
 
 }))
 
@@ -16,9 +16,6 @@ const dbconnect  = require("./db/db.js");
 dbconnect();
 app.use(cookie());
 app.use(express.urlencoded({ extended: true }));
-
-
-
 
 app.use((req, res, next) => {
   const time = new Date().toLocaleString(); // Current local time
@@ -32,12 +29,8 @@ app.use("/api/auth",authroute);
 const supplierroute = require("./routes/supplier.route.js");
 app.use('/api/supplier' , supplierroute);
 
-// // this api endoint made for finding blood donars in database
-// const blooddonors = require("./routes/blooddonor.route.js");
-// app.use("/api/blood", blooddonors);
-
-// const donorresponse = require("./routes/donor.route.js");
-// app.use("/api",donorresponse);
+const vendoritem = require("./routes/vendor.item.route.js");
+app.use("/vendor/item", vendoritem);
 
 const port = process.env.PORT
 app.listen(port,'0.0.0.0', ()=>{

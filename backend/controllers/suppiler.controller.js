@@ -4,7 +4,7 @@ const Order = require('../models/order.model');
 
 const addItem = async (req, res) => {
   try {
-    const supplierId = req.user._id; // assuming auth middleware sets req.user
+    const supplierId = req.user._id;
 
     const {
       name,
@@ -12,21 +12,38 @@ const addItem = async (req, res) => {
       unit,
       stock,
       deliveryAvailable,
-      imageBase64 // frontend should send image as base64 string if using JSON
+      imageBase64,
+      category,
     } = req.body;
 
-    // Basic validation
-    if (!name || !pricePerUnit || !unit) {
-      return res.status(400).json({ message: "Item name, price per unit, and unit type are required." });
+    if (!name || !pricePerUnit || !unit || !category) {
+      return res.status(400).json({
+        message: "Item name, price per unit, unit type, and category are required."
+      });
     }
 
     if (!['kg', 'litre', 'piece'].includes(unit)) {
-      return res.status(400).json({ message: "Unit must be 'kg', 'litre', or 'piece'." });
+      return res.status(400).json({
+        message: "Unit must be 'kg', 'litre', or 'piece'."
+      });
+    }
+
+    if (
+      ![
+        'Fresh Produce',
+        'Grains and Flours',
+        'Spices and Condiments',
+        'Oils and Fats',
+        'Packaging and Disposables'
+      ].includes(category)
+    ) {
+      return res.status(400).json({
+        message: "Invalid category. Must be one of the predefined categories."
+      });
     }
 
     let imageUrl = '';
 
-    // Upload image to Cloudinary if provided
     if (imageBase64) {
       const uploaded = await cloudinary.uploader.upload(imageBase64, {
         folder: "item_images"
@@ -34,21 +51,20 @@ const addItem = async (req, res) => {
       imageUrl = uploaded.secure_url;
     }
 
-    const newItem = new Item({
+    const newItem = await Item.create({
       supplierId,
       name,
       pricePerUnit,
       unit,
       stock: stock || 0,
       deliveryAvailable: deliveryAvailable === 'true' || deliveryAvailable === true,
-      imageUrl
+      imageUrl,
+      category,
     });
-
-    const savedItem = await newItem.save();
 
     return res.status(201).json({
       message: "Item added successfully",
-      item: savedItem
+      item: newItem
     });
 
   } catch (error) {
@@ -57,9 +73,10 @@ const addItem = async (req, res) => {
   }
 };
 
+
 const getSupplierOrders = async (req, res) => {
   try {
-    const supplierId = req.user._id; // secure and correct way
+    const supplierId = req.user._id; 
 
     const orders = await Order.find({ supplierId, status: 'pending' })
                               .populate('vendorId', 'name location'); // optional, to show vendor info
@@ -70,7 +87,7 @@ const getSupplierOrders = async (req, res) => {
 };
 
 
-// 2. Accept or reject an order
+
 const updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -108,9 +125,6 @@ const updateDeliveryDetails = async (req, res) => {
     res.status(500).json({ error: 'Failed to update delivery details' });
   }
 };
-
-
-
 
 module.exports = {addItem , getSupplierOrders,
   updateOrderStatus,
