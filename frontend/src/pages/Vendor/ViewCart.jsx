@@ -36,7 +36,7 @@ const ViewCart = () => {
       await axiosInstance.delete(`vendor/cart/remove/${id}`);
       setCartItems([]);
     } catch (err) {
-      console.error("Failed to clear cart:", err);
+      console.error("Failed to clear item:", err);
     }
   };
 
@@ -58,7 +58,7 @@ const ViewCart = () => {
 
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [handleDelete]);
 
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.quantity * item.itemId.pricePerUnit,
@@ -110,7 +110,7 @@ const ViewCart = () => {
                   ₹{item.quantity * item.itemId.pricePerUnit}
                 </p>
               </div>
-              <button onClick={() => handleDelete(item._id)}className="text-red-600 hover:text-red-800">
+              <button onClick={() => handleDelete(item.itemId._id)}className="text-red-600 hover:text-red-800">
                 <Trash />
               </button>
             </div>
