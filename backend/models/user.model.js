@@ -33,10 +33,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['delivery', 'pickup', 'both']
   },
-  serviceArea: { type: String } // Could also be array of pincodes
+  serviceArea: { type: String } 
 });
 
-// Password hashing
+
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 10);
