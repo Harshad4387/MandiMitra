@@ -1,9 +1,15 @@
-const Item = require("../models/Item");
-const Order = require("../models/Order");
-
+const Item = require("../models/item.model");
+const Order = require("../models/order.model");
+const Cart = require("../models/cart.model");
 const placeOrder = async (req, res) => {
   try {
-    const { items, deliveryMethod, deliveryAddress } = req.body;
+      const cart = await Cart.findOne({ vendorId });
+      if (!cart || cart.items.length === 0) {
+        return res.status(400).json({ message: "Cart is empty." });
+
+      }
+      const items = cart.items; 
+    const {  deliveryMethod, deliveryAddress } = req.body;
     const vendorId = req.user._id;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -68,6 +74,7 @@ const placeOrder = async (req, res) => {
       orderId: order._id,
       totalAmount,
     });
+    await cart.deleteOne(); 
 
   } catch (error) {
     console.error("Error placing order:", error);
@@ -75,6 +82,24 @@ const placeOrder = async (req, res) => {
   }
 };
 
+const searchItemsByName = async (req, res) => {
+  try {
+    const { name } = req.query;
+
+    if (!name) {
+      return res.status(400).json({ message: 'Item name is required in query' });
+    }
+    const items = await Item.find({ name: { $regex: name, $options: 'i' } });
+
+    return res.status(200).json({ items });
+  } catch (error) {
+    console.error('Error in searchItemsByName:', error.message);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 
-module.exports = { placeOrder };
+
+
+
+module.exports = { placeOrder, searchItemsByName };

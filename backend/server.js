@@ -30,7 +30,10 @@ const supplierroute = require("./routes/supplier.route.js");
 app.use('/api/supplier' , supplierroute);
 
 const vendoritem = require("./routes/vendor.item.route.js");
-app.use("/vendor/item", vendoritem);
+app.use("/api/vendor/item", vendoritem);
+
+const vendorroute = require("./routes/vendor.route.js");
+app.use("/api/vendor",vendorroute);
 
 const port = process.env.PORT
 app.listen(port,'0.0.0.0', ()=>{
