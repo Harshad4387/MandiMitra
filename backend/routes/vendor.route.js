@@ -5,7 +5,7 @@ const  {addToCart,getCart, removeCartItem ,clearCart } = require("../controllers
 
 
 const { placeOrder, searchItemsByName} = require('../controllers/vendor.controller');
-router.post("/place-order", verifyjwt , placeOrder);
+router.post("/place-order", verifyjwt,placeOrder);
 router.get('/search', searchItemsByName);
 router.post("/cart/add" ,verifyjwt,addToCart);
 router.get("/cart/getcart",verifyjwt,getCart);
