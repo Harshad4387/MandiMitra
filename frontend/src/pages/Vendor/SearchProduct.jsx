@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../lib/axios";
+import { toast } from "react-hot-toast";
 
 const SearchProduct = () => {
   const [searchParams] = useSearchParams();
@@ -16,9 +17,8 @@ const SearchProduct = () => {
       try {
         const url = query
           ? `/vendor/search?name=${encodeURIComponent(query)}`
-          : "/vendor/item/all-categorized-items"; // endpoint to fetch all items
+          : "/vendor/item/all-categorized-items";
         const res = await axiosInstance.get(url);
-        console.log(res)
         setItems(res.data || []);
       } catch (error) {
         console.error("Failed to fetch items:", error);
@@ -39,8 +39,26 @@ const SearchProduct = () => {
     );
   };
 
+  const addToCart = async (itemId) => {
+    try {
+      const res = await axiosInstance.post("/vendor/cart/add", {
+        itemId,
+        quantity: 1,
+      });
+
+      if (res.status === 200 || res.status === 201) {
+        toast.success("Added to cart");
+      } else {
+        toast.error("Failed to add item to cart");
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Error adding to cart");
+    }
+  };
+
   return (
     <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto">
+      {/* Search bar */}
       <form onSubmit={handleSearch} className="mb-6 flex gap-3 items-center">
         <input
           type="text"
@@ -61,6 +79,7 @@ const SearchProduct = () => {
         {query ? `Results for "${query}"` : "All Products"}
       </h1>
 
+      {/* Item grid */}
       {loading ? (
         <p className="text-gray-500">Loading...</p>
       ) : items.length === 0 ? (
@@ -89,6 +108,14 @@ const SearchProduct = () => {
                 <p className="text-sm text-gray-500">
                   Delivery: {item.deliveryAvailable ? "Available" : "Not Available"}
                 </p>
+
+                <button
+                  onClick={() => addToCart(item._id)}
+                  className="mt-2 w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
+                  disabled={item.stock <= 0}
+                >
+                  {item.stock > 0 ? "Add to Cart" : "Out of Stock"}
+                </button>
               </div>
             </div>
           ))}

@@ -31,6 +31,15 @@ const ViewCart = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await axiosInstance.delete(`vendor/cart/remove/${id}`);
+      setCartItems([]);
+    } catch (err) {
+      console.error("Failed to clear cart:", err);
+    }
+  };
+
   const handlePlaceOrder = async () => {
     try {
       await axiosInstance.post("vendor/place-order", {
@@ -101,7 +110,7 @@ const ViewCart = () => {
                   ₹{item.quantity * item.itemId.pricePerUnit}
                 </p>
               </div>
-              <button className="text-red-600 hover:text-red-800">
+              <button onClick={() => handleDelete(item._id)}className="text-red-600 hover:text-red-800">
                 <Trash />
               </button>
             </div>

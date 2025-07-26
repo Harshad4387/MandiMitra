@@ -35,15 +35,27 @@ const getCart = async (req, res) => {
 };
 
 const removeCartItem = async (req, res) => {
-  const vendorId = req.user._id;
-  const { itemId } = req.params;
+  try {
+    const vendorId = req.user._id;
+    const { itemId } = req.params;
 
-  const cart = await Cart.findOne({ vendorId });
-  if (!cart) return res.status(404).json({ message: "Cart not found" });
+    const cart = await Cart.findOne({ vendorId });
+    if (!cart) return res.status(404).json({ message: "Cart not found" });
 
-  cart.items = cart.items.filter(i => i.itemId.toString() !== itemId);
-  await cart.save();
-  res.status(200).json({ message: "Item removed from cart", cart });
+    // Filter item by comparing ObjectIds safely
+    const initialLength = cart.items.length;
+    cart.items = cart.items.filter(i => !i.itemId.equals(itemId));
+
+    if (cart.items.length === initialLength) {
+      return res.status(404).json({ message: "Item not found in cart" });
+    }
+
+    await cart.save();
+    res.status(200).json({ message: "Item removed from cart", cart });
+  } catch (err) {
+    console.error("Error removing item from cart:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 const clearCart = async (req, res) => {
