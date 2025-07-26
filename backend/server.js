@@ -5,11 +5,12 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: '*', 
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  credentials: false  // must be true when using withCredentials
 }));
+
 
 const dbconnect  = require("./db/db.js");
 dbconnect();

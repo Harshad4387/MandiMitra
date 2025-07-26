@@ -1,9 +1,10 @@
 const User = require('../models/user.model.js');
-// const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const generatejwt = require("../utlis/generatetoken.js");
 const cloudinary = require("../utlis/cloudinary.js");
 
 const signup = async (req, res) => {
+  console.log(req.body);
   try {
     const { 
       role, 
@@ -12,7 +13,6 @@ const signup = async (req, res) => {
       phone,
       name,
       foodType,
-      location,
       businessName,
       ownerName,
       businessAddress,
@@ -51,11 +51,11 @@ const signup = async (req, res) => {
       }
       
       // Validate location structure
-      if (!location.address || typeof location.lat !== 'number' || typeof location.lng !== 'number') {
-        return res.status(400).json({ 
-          message: "Location must include address, latitude, and longitude" 
-        });
-      }
+      // if (!location.address || typeof location.lat !== 'number' || typeof location.lng !== 'number') {
+      //   return res.status(400).json({ 
+      //     message: "Location must include address, latitude, and longitude" 
+      //   });
+      // }
     }
 
     if (role === 'supplier') {
@@ -66,7 +66,7 @@ const signup = async (req, res) => {
       }
 
       // Validate delivery method
-      if (!['delivery', 'pickup', 'both'].includes(deliveryMethod)) {
+      if (!['Delivery', 'Pickup', 'Both'].includes(deliveryMethod)) {
         return res.status(400).json({ 
           message: "Delivery method must be 'delivery', 'pickup', or 'both'" 
         });
@@ -230,7 +230,6 @@ try {
     const options = {
         httpOnly : true,
         secure : true,
-        // expires: new Date(0)
     };
         res.cookie("jwt","",options);
         res.status(200).json({message : "logged out succesfully"});
