@@ -3,50 +3,165 @@ const bcrypt = require("bcryptjs");
 const generatejwt = require("../utils/generatetoken.js");
 const cloudinary = require("../utils/cloudinary.js");
 
-const signup = async(req,res)=>{
-   try {
-     const {fullName,email,password} = req.body;
-     if(!fullName || !email || !password){
-        return res.status(400).json({message : "allfields are mandaotary"});
-     }
-     if(password.length < 6){
-         return res.status(400).json({message : "password must be atleast 6 characters"});
-     }
- 
-     const user = await User.findOne({email});
-     if(user){
-         return res.status(400).json({message : "user already exists"});
-     }
-     const salt = await bcrypt.genSalt(10);
-     const hashpassword = await bcrypt.hash(password,salt);
- 
-     const newuser = await User({
-         fullName : fullName,
-         email : email ,
-         password : hashpassword
-     })
- 
-     if(newuser){
-        
-       await  generatejwt(newuser._id, res);
-        await newuser.save();
-         res.status(201).json({
-            id  : newuser._id,
-            fullName : newuser.fullName,
-            email : newuser.email,
-            profilepic : newuser.profilepic
-         })
-     }
-     else{
-         return res.status(400).json({message : "invalid credantils"});
-     }
-   } catch (error) {
-        console.log("error in signup controller " , error.message);
-        res.status(500).json({message : "Internal server error"});
-    
-   }
+const signup = async (req, res) => {
+  try {
+    const { 
+      role, 
+      email, 
+      password, 
+      phone,
+      // Vendor fields
+      name,
+      foodType,
+      location,
+      // Supplier fields
+      businessName,
+      ownerName,
+      businessAddress,
+      gstNumber,
+      deliveryMethod,
+      serviceArea
+    } = req.body;
 
-}
+    // Basic validation
+    if (!role || !email || !password || !phone) {
+      return res.status(400).json({ 
+        message: "Role, email, password, and phone are mandatory" 
+      });
+    }
+
+    // Validate role
+    if (!['vendor', 'supplier'].includes(role)) {
+      return res.status(400).json({ 
+        message: "Role must be either 'vendor' or 'supplier'" 
+      });
+    }
+
+    // Password validation
+    if (password.length < 6) {
+      return res.status(400).json({ 
+        message: "Password must be at least 6 characters" 
+      });
+    }
+
+    // Role-specific validation
+    if (role === 'vendor') {
+      if (!name || !foodType || !location) {
+        return res.status(400).json({ 
+          message: "Name, food type, and location are required for vendors" 
+        });
+      }
+      
+      // Validate location structure
+      if (!location.address || typeof location.lat !== 'number' || typeof location.lng !== 'number') {
+        return res.status(400).json({ 
+          message: "Location must include address, latitude, and longitude" 
+        });
+      }
+    }
+
+    if (role === 'supplier') {
+      if (!businessName || !ownerName || !businessAddress || !deliveryMethod || !serviceArea) {
+        return res.status(400).json({ 
+          message: "Business name, owner name, business address, delivery method, and service area are required for suppliers" 
+        });
+      }
+
+      // Validate delivery method
+      if (!['delivery', 'pickup', 'both'].includes(deliveryMethod)) {
+        return res.status(400).json({ 
+          message: "Delivery method must be 'delivery', 'pickup', or 'both'" 
+        });
+      }
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ 
+        message: "User already exists with this email" 
+      });
+    }
+
+    // Create user object based on role
+    const userData = {
+      role,
+      email,
+      password, // Will be hashed by pre-save middleware
+      phone
+    };
+
+    // Add role-specific data
+    if (role === 'vendor') {
+      userData.name = name;
+      userData.foodType = foodType;
+      userData.location = location;
+      userData.loyaltyPoints = 0; // Default value
+    }
+
+    if (role === 'supplier') {
+      userData.businessName = businessName;
+      userData.ownerName = ownerName;
+      userData.businessAddress = businessAddress;
+      userData.deliveryMethod = deliveryMethod;
+      userData.serviceArea = serviceArea;
+      
+      // GST number is optional
+      if (gstNumber) {
+        userData.gstNumber = gstNumber;
+      }
+    }
+
+    // Create new user
+    const newUser = new User(userData);
+    await newUser.save();
+
+    // Generate JWT token
+    await generatejwt(newUser._id, res);
+
+    // Prepare response data based on role
+    let responseData = {
+      id: newUser._id,
+      role: newUser.role,
+      email: newUser.email,
+      phone: newUser.phone
+    };
+
+    if (role === 'vendor') {
+      responseData = {
+        ...responseData,
+        name: newUser.name,
+        foodType: newUser.foodType,
+        location: newUser.location,
+        loyaltyPoints: newUser.loyaltyPoints
+      };
+    }
+
+    if (role === 'supplier') {
+      responseData = {
+        ...responseData,
+        businessName: newUser.businessName,
+        ownerName: newUser.ownerName,
+        businessAddress: newUser.businessAddress,
+        gstNumber: newUser.gstNumber,
+        deliveryMethod: newUser.deliveryMethod,
+        serviceArea: newUser.serviceArea
+      };
+    }
+
+    res.status(201).json({
+      message: `${role.charAt(0).toUpperCase() + role.slice(1)} registered successfully`,
+      user: responseData
+    });
+
+  } catch (error) {
+    console.log("Error in signup controller:", error.message);
+    res.status(500).json({ 
+      message: "Internal server error" 
+    });
+  }
+};
+
 
 const login = async(req,res)=>{
     const {email , password} = req.body;

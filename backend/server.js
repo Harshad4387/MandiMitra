@@ -11,8 +11,8 @@ app.use(cors({
   credentials: true
 }));
 
-// const dbconnect  = require("./db/db.js");
-// dbconnect();
+const dbconnect  = require("./db/db.js");
+dbconnect();
 app.use(cookie());
 app.use(express.urlencoded({ extended: true }));
 
