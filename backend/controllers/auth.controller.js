@@ -1,7 +1,7 @@
 const User = require('../models/user.model.js');
-const bcrypt = require("bcryptjs");
-const generatejwt = require("../utils/generatetoken.js");
-const cloudinary = require("../utils/cloudinary.js");
+// const bcrypt = require("bcryptjs");
+const generatejwt = require("../utlis/generatetoken.js");
+const cloudinary = require("../utlis/cloudinary.js");
 
 const signup = async (req, res) => {
   try {
@@ -10,11 +10,9 @@ const signup = async (req, res) => {
       email, 
       password, 
       phone,
-      // Vendor fields
       name,
       foodType,
       location,
-      // Supplier fields
       businessName,
       ownerName,
       businessAddress,

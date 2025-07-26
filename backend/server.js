@@ -25,8 +25,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// const authroute = require("./routes/auth.route.js");
-// app.use("/api/auth",authroute);
+const authroute = require("./routes/auth.route.js");
+app.use("/api/auth",authroute);
 
 // // this api endpoint made for blood request add in database 
 // const bloodrequest = require("./routes/blood-request.route.js");
