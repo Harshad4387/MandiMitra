@@ -1,21 +1,18 @@
 const Item = require("../models/item.model");
 const Order = require("../models/order.model");
 const Cart = require("../models/cart.model");
+
 const placeOrder = async (req, res) => {
   try {
-      const vendorId = req.user._id;
-      const cart = await Cart.findOne({ vendorId });
-      if (!cart || cart.items.length === 0) {
-        return res.status(400).json({ message: "Cart is empty." });
+    const vendorId = req.user._id;
+    const cart = await Cart.findOne({ vendorId });
 
-      }
-      const items = cart.items; 
-      const {  deliveryMethod, deliveryAddress } = req.body;
-      
-
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ message: "At least one item must be included in the order." });
+    if (!cart || cart.items.length === 0) {
+      return res.status(400).json({ message: "Cart is empty." });
     }
+
+    const items = cart.items;
+    const { deliveryMethod, deliveryAddress } = req.body;
 
     if (!deliveryMethod || !['pickup', 'delivery'].includes(deliveryMethod)) {
       return res.status(400).json({ message: "Invalid delivery method." });
@@ -23,40 +20,55 @@ const placeOrder = async (req, res) => {
 
     let totalAmount = 0;
     const orderItems = [];
-
     let supplierId = null;
 
     for (const item of items) {
-  const dbItem = await Item.findById(item.itemId);
-  if (!dbItem) {
-    return res.status(404).json({ message: `Item with ID ${item.itemId} not found.` });
-  }
+      const dbItem = await Item.findById(item.itemId);
+      if (!dbItem) {
+        return res.status(404).json({ message: `Item with ID ${item.itemId} not found.` });
+      }
 
-  if (item.quantity > dbItem.stock) {
-    return res.status(400).json({ message: `Insufficient stock for item: ${dbItem.name}` });
-  }
+      if (item.quantity > dbItem.stock) {
+        return res.status(400).json({ message: `Insufficient stock for item: ${dbItem.name}` });
+      }
 
-  if (!supplierId) {
-    supplierId = dbItem.supplierId;
-  } else if (supplierId.toString() !== dbItem.supplierId.toString()) {
-    return res.status(400).json({ message: "All items must be from the same supplier." });
-  }
+      if (!supplierId) {
+        supplierId = dbItem.supplierId;
+      } else if (supplierId.toString() !== dbItem.supplierId.toString()) {
+        return res.status(400).json({ message: "All items must be from the same supplier." });
+      }
 
-  const itemTotal = dbItem.pricePerUnit * item.quantity;
-  totalAmount += itemTotal;
+      const itemTotal = dbItem.pricePerUnit * item.quantity;
+      totalAmount += itemTotal;
 
-  orderItems.push({
-    itemId: dbItem._id,
-    name: dbItem.name,
-    quantity: item.quantity,
-    pricePerUnit: dbItem.pricePerUnit,
-    totalPrice: itemTotal
-  });
+      orderItems.push({
+        itemId: dbItem._id,
+        name: dbItem.name,
+        quantity: item.quantity,
+        pricePerUnit: dbItem.pricePerUnit,
+        totalPrice: itemTotal
+      });
 
-  dbItem.stock -= item.quantity;
-  await dbItem.save();
-  return res.status(200).json({message : "order placed succesfully"});
-}
+      dbItem.stock -= item.quantity;
+      await dbItem.save();
+    }
+
+    // Save the order
+    const newOrder = new Order({
+      vendorId,
+      supplierId,
+      items: orderItems,
+      totalAmount,
+      deliveryMethod,
+      deliveryAddress
+    });
+
+    await newOrder.save();
+
+    // Delete cart after order is placed
+    await Cart.findOneAndDelete({ vendorId });
+
+    return res.status(201).json({ message: "Order placed successfully", orderId: newOrder._id });
 
   } catch (error) {
     console.error("Error placing order:", error);
@@ -79,7 +91,7 @@ const searchItemsByName = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
-const getOrdersByVendor = async (req, res) => {
+const myorders = async (req, res) => {
   try {
     const vendorId = req.user._id; 
     const orders = await Order.find({ vendorId })
@@ -92,4 +104,4 @@ const getOrdersByVendor = async (req, res) => {
   }
 };
 
-module.exports = { placeOrder, searchItemsByName,getOrdersByVendor };
+module.exports = { placeOrder, searchItemsByName,myorders};
