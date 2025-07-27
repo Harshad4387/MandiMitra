@@ -25,6 +25,12 @@ import Profile from "./pages/Vendor/Profile.jsx";
 import LoginPage from "./pages/Supplier/LoginPage.jsx";
 import SupplierDashboard from "./pages/Supplier/SupplierDashboard.jsx";
 import VendorHomePage from "./pages/Vendor/VendorHomePage.jsx";
+import SupplierLayout from "./layouts/SupplierLayout.jsx";
+import AddItemForm from "./pages/Supplier/AddItemForm.jsx"
+import ViewOrdersPanel from "./pages/Supplier/ViewOrdersPanel.jsx";
+import RatingsAndReviews from "./pages/Supplier/RatingsAndReviews.jsx";
+import CustomersPage from "./pages/Supplier/ContactCustomer.jsx";
+import ProfilePage from "./pages/Supplier/ProfilePage.jsx";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
@@ -67,22 +73,15 @@ const App = () => {
           </Route>
         )}
 
-        {/* {authUser && (
-          <Route path="/supplier" element={<SupplierDashboard />}>
-            <Route path="dashboard" element={<VendorDashboard />} />
-            <Route path="search" element={<SearchProduct />} />
-            <Route path="order" element={<PlaceOrder />} />
-            <Route path="loyalty" element={<LoyaltyPoints />} />
-            <Route path="orders" element={<MyOrders />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="support" element={<Support />} />
-            <Route path="profile" element={<Profile />} />
-          </Route>
-        )} */}
 
-        {authUser && (
+        <Route path="/supplier" element={<SupplierLayout />}>
           <Route path="/supplier/dashboard" element={<SupplierDashboard />} />
-        )}
+          <Route path="/supplier/add-item" element={<AddItemForm />} />
+          <Route path="/supplier/view-orders" element={<ViewOrdersPanel />} />
+          <Route path="/supplier/ratings-reviews" element={<RatingsAndReviews />} />
+          <Route path="/supplier/contact-customer" element={<CustomersPage />} />
+          <Route path="/supplier/profile" element={<ProfilePage />} />
+        </Route>
 
       </Routes>
 
