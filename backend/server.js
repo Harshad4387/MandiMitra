@@ -5,12 +5,11 @@ const app = express();
 app.use(express.json());
 const cors = require("cors");
 
-// Fix this
+
 app.use(cors({
-  origin: "http://localhost:5173", // ✅ correct port
+  origin: "http://localhost:5173", 
   credentials: true
 }));
-
 
 const dbconnect  = require("./db/db.js");
 dbconnect();
@@ -23,6 +22,13 @@ app.use((req, res, next) => {
   next();
 });
 
+
+app.get("/" , (req,res)=>{
+   res.send({
+    activestaus : true ,
+    message : "server is running"
+   })
+})
 const authroute = require("./routes/auth.route.js");
 app.use("/api/auth",authroute);
 

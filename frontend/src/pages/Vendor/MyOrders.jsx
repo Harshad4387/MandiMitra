@@ -28,6 +28,29 @@ const MyOrders = () => {
     }
   };
 
+  const downloadBill = async (orderId) => {
+    try {
+      const response = await axiosInstance.get(`/vendor/vendor/bill/${orderId}`, {
+        responseType: "blob", // important for binary data like PDF
+      });
+
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = await `bill-${orderId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error downloading bill:", err);
+      alert("Failed to download bill.");
+    }
+  };
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -103,6 +126,16 @@ const MyOrders = () => {
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              {/* ✅ Download Bill Button */}
+              <div className="mt-4">
+                <button
+                  onClick={() => downloadBill(order._id)}
+                  className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded hover:bg-blue-700 transition"
+                >
+                  Download Bill
+                </button>
               </div>
             </div>
           ))}

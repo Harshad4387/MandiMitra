@@ -6,11 +6,12 @@ const generatejwt = async (userid , res)=>{
     });
 
     const options = {
-        httpOnly : true,
-        secure : true,
-    
-    };
-    res.cookie("jwt", token, options); 
+  httpOnly: true,
+  secure: true,
+  sameSite: 'None', 
+};
+
+   res.cookie("jwt", token, options); 
     return token;
 };
 
