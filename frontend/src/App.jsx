@@ -1,4 +1,3 @@
-import Navbar from "./components/NavBar.jsx";
 import HomePage from "./pages/HomePage.jsx";
 
 import { Routes, Route, Navigate } from "react-router-dom";
@@ -13,20 +12,20 @@ import VendorSignUpPage from "./pages/Vendor/VendorSignUp.jsx";
 
 import SupplierSignUpPage from "./pages/Supplier/SupplierSignUp.jsx";
 
-import VendorLayout from "./layouts/VenderLayout.jsx";
+import VendorLayout from "./layouts/VendorLayout.jsx";
 
 import SearchProduct from "./pages/Vendor/SearchProduct.jsx";
 import PlaceOrder from "./pages/Vendor/ViewCart.jsx";
 import MyOrders from "./pages/Vendor/MyOrders.jsx";
 import Support from "./pages/Vendor/Support.jsx";
-import Profile from "./pages/Vendor/Profile.jsx";
+import Profile from "./pages/Vendor/ProfilePage.jsx";
 import LoginPage from "./pages/Supplier/LoginPage.jsx";
 import SupplierDashboard from "./pages/Supplier/SupplierDashboard.jsx";
 import VendorHomePage from "./pages/Vendor/VendorHomePage.jsx";
 import SupplierLayout from "./layouts/SupplierLayout.jsx";
 import AddItemForm from "./pages/Supplier/AddItemForm.jsx"
 import ViewOrdersPanel from "./pages/Supplier/ViewOrdersPanel.jsx";
-import CustomersPage from "./pages/Supplier/ContactCustomer.jsx";
+import CustomersPage from "./pages/Supplier/CustomersPage.jsx";
 import ProfilePage from "./pages/Supplier/ProfilePage.jsx";
 import ViewMyItems from './pages/Supplier/ViewMyItems';
 import GroqChatbot from "./pages/Vendor/GroqChatbot.jsx";

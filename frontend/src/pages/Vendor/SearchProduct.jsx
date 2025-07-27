@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../lib/axios";
+import { axiosInstance } from "../../lib/axios.js";
 import { toast } from "react-hot-toast";
 
 const SearchProduct = () => {

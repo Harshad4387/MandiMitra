@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { axiosInstance } from '../../lib/axios';
-import StatCard from '../../components/supplier/StatCard';
-import RevenueChart from '../../components/supplier/RevenueCharts';
-import StatusPieChart from '../../components/Supplier/StatusPieChart';
-import ItemBarChart from '../../components/Supplier/ItemBarChart';
-import CategoryPieChart from '../../components/Supplier/CategoryPieChart';
+import { axiosInstance } from '../../lib/axios.js';
+import StatCard from '../../components/supplier/StatCard.jsx';
+import RevenueChart from '../../components/supplier/RevenueChart.jsx';
+import StatusPieChart from '../../components/supplier/StatusPieChart.jsx';
+import ItemBarChart from '../../components/supplier/ItemBarChart.jsx';
+import CategoryPieChart from '../../components/supplier/CategoryPieChart.jsx';
 
 export default function AnalyticsPage() {
   const [data, setData] = useState(null);

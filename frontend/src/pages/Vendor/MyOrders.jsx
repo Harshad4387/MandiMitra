@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { axiosInstance } from "../../lib/axios";
+import { axiosInstance } from "../../lib/axios.js";
 import { Loader2, PackageCheck } from "lucide-react";
 
 // Utility to format date
