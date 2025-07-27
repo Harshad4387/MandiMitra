@@ -8,12 +8,7 @@ const cors = require("cors");
 
 app.use(cors({
   origin: "https://bucolic-dasik-cfa237.netlify.app", 
-  credentials: true,
-
-}));
-app.options('*', cors({
-  origin: "https://bucolic-dasik-cfa237.netlify.app",
-  credentials: true,
+  credentials: true
 }));
 
 const dbconnect  = require("./db/db.js");
