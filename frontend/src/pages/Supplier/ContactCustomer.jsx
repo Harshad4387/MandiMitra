@@ -7,73 +7,11 @@ const CustomersPage = () => {
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
 
+  
   const fetchCustomers = async () => {
     try {
-      // Hardcoded data for UI testing
-      const mockCustomers = [
-        {
-          _id: '64f5a2b1c8e9d12345678901',
-          name: 'John Smith',
-          email: 'john.smith@email.com',
-          phone: '+1 (555) 123-4567',
-          address: '123 Main Street, New York, NY 10001',
-          totalOrders: 15,
-          totalSpent: 1250.75,
-          lastOrderDate: '2024-12-15T10:30:00Z'
-        },
-        {
-          _id: '64f5a2b1c8e9d12345678902',
-          name: 'Sarah Johnson',
-          email: 'sarah.johnson@email.com',
-          phone: '+1 (555) 987-6543',
-          address: '456 Oak Avenue, Los Angeles, CA 90210',
-          totalOrders: 8,
-          totalSpent: 650.25,
-          lastOrderDate: '2024-12-20T14:45:00Z'
-        },
-        {
-          _id: '64f5a2b1c8e9d12345678903',
-          name: 'Michael Brown',
-          email: 'michael.brown@email.com',
-          phone: '+1 (555) 456-7890',
-          address: '789 Pine Road, Chicago, IL 60601',
-          totalOrders: 22,
-          totalSpent: 2100.50,
-          lastOrderDate: '2024-12-18T09:15:00Z'
-        },
-        {
-          _id: '64f5a2b1c8e9d12345678904',
-          name: 'Emily Davis',
-          email: 'emily.davis@email.com',
-          phone: '+1 (555) 234-5678',
-          address: '321 Elm Street, Miami, FL 33101',
-          totalOrders: 5,
-          totalSpent: 425.00,
-          lastOrderDate: '2024-12-22T16:20:00Z'
-        },
-        {
-          _id: '64f5a2b1c8e9d12345678905',
-          name: 'David Wilson',
-          email: 'david.wilson@email.com',
-          phone: '+1 (555) 345-6789',
-          address: '654 Maple Drive, Seattle, WA 98101',
-          totalOrders: 12,
-          totalSpent: 890.75,
-          lastOrderDate: '2024-12-10T11:30:00Z'
-        },
-        {
-          _id: '64f5a2b1c8e9d12345678906',
-          name: 'Lisa Anderson',
-          email: 'lisa.anderson@email.com',
-          phone: '+1 (555) 567-8901',
-          address: '987 Cedar Lane, Austin, TX 78701',
-          totalOrders: 18,
-          totalSpent: 1450.25,
-          lastOrderDate: '2024-12-25T13:45:00Z'
-        }
-      ]
-      
-      setCustomers(mockCustomers)
+      const res = await axiosInstance.get('/supplier/customers')
+      setCustomers(res.data || [])
     } catch (err) {
       setError('Failed to fetch customers')
     } finally {
@@ -82,18 +20,15 @@ const CustomersPage = () => {
   }
 
   useEffect(() => {
-    // Simulate loading delay
-    setTimeout(() => {
-      fetchCustomers()
-    }, 1000)
+    fetchCustomers()
   }, [])
-
+  
   const filteredCustomers = customers.filter(customer =>
     customer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.phone?.includes(searchTerm)
   )
-
+  
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -109,7 +44,7 @@ const CustomersPage = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center max-w-md">
-          <div className="text-red-500 text-2xl mb-2">⚠️</div>
+          <div className="text-red-500 text-2xl mb-2">⚠</div>
           <p className="text-red-700 font-medium">{error}</p>
         </div>
       </div>
@@ -144,7 +79,7 @@ const CustomersPage = () => {
               </div>
               <input
                 type="text"
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 placeholder="Search customers by name, email, or phone..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -196,7 +131,7 @@ const CustomersPage = () => {
                     </h4>
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-400 text-sm">✉️</span>
+                        <span className="text-gray-400 text-sm">✉</span>
                         <p className="text-sm text-gray-800">{customer.email || 'No email provided'}</p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -214,30 +149,33 @@ const CustomersPage = () => {
                       </h4>
                       <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
                         <p className="text-sm text-gray-800 leading-relaxed">
-                          {customer.address}
+                          {typeof customer.address === 'object'
+                            ? `Lat: ${customer.address.latitude}, Lng: ${customer.address.longitude}`
+                            : customer.address}
                         </p>
                       </div>
                     </div>
                   )}
 
+
                   <div className="flex justify-between items-center pt-2 border-t border-gray-100">
                     <div>
                       <p className="text-xs text-gray-500">Total Orders</p>
-                      <p className="text-lg font-bold text-gray-900">{customer.totalOrders || 0}</p>
+                      <p className="text-lg font-bold text-gray-900">{customer.orderCount || 0}</p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Total Spent</p>
                       <p className="text-lg font-bold text-green-600">
-                        ${customer.totalSpent?.toFixed(2) || '0.00'}
+                        ₹ {(customer.totalSpent || 0).toFixed(2)}
                       </p>
                     </div>
                   </div>
 
-                  {customer.lastOrderDate && (
+                  {customer.lastOrder?.placedAt && (
                     <div className="pt-2">
                       <p className="text-xs text-gray-500">Last Order</p>
                       <p className="text-sm text-gray-800">
-                        {new Date(customer.lastOrderDate).toLocaleDateString('en-US', {
+                        {new Date(customer.lastOrder.placedAt).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'short',
                           day: 'numeric'
@@ -251,11 +189,21 @@ const CustomersPage = () => {
                   <button
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 text-sm"
                     onClick={() => {
-                      console.log('View customer details:', customer._id)
+                      // console.log('Customer object:', customer);
+
+                      const phone = customer.phone?.replace(/[^0-9]/g, '') // Clean the number
+                      if (!phone) {
+                        alert('Phone number not available for this customer.')
+                        return
+                      }
+                      const message = `Hello ${customer.name || ''}, I would like to connect with you regarding your recent orders.`
+                      const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+                      window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
                     }}
+
                   >
                     <span>📋</span>
-                    View Order History
+                    Chat with customer
                   </button>
                 </div>
               </div>

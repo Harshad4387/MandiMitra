@@ -9,8 +9,7 @@ const ViewOrdersPanel = () => {
   const fetchOrders = async () => {
     try {
       const res = await axiosInstance.get('/supplier/orders/pending')
-      console.log(res)
-      setOrders(res.data || [])
+      setOrders(res.data)
     } catch (err) {
       setError('Failed to fetch orders')
     } finally {
@@ -118,7 +117,7 @@ const ViewOrdersPanel = () => {
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                     onClick={() =>
                       window.open(
-                        `https://www.google.com/maps?q=${order.location?.latitude},${order.location?.longitude}`,
+                        `https://www.google.com/maps?q=${order.latitude},${order.longitude}`,
                         '_blank'
                       )
                     }

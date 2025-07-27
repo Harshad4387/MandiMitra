@@ -150,16 +150,20 @@ const AddItemForm = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium">Unit Type (kg/litre/piece)</label>
-            <input
-              className="mt-1 w-full border px-3 py-2 rounded"
-              type="text"
+            <label className="block text-gray-700 font-medium">Unit Type</label>
+            <select
               name="unitType"
               value={form.unitType}
               onChange={handleChange}
-              placeholder="e.g. kg"
-            />
+              className="mt-1 w-full border px-3 py-2 rounded"
+            >
+              <option value="">Select Unit</option>
+              <option value="kg">kg</option>
+              <option value="litre">litre</option>
+              <option value="piece">piece</option>
+            </select>
           </div>
+
         </div>
 
         {/* Category */}

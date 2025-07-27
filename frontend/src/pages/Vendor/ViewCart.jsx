@@ -34,7 +34,7 @@ const ViewCart = () => {
   const handleDelete = async (id) => {
     try {
       await axiosInstance.delete(`vendor/cart/remove/${id}`);
-      setCartItems([]);
+      fetchCart()
     } catch (err) {
       console.error("Failed to clear item:", err);
     }
@@ -58,7 +58,7 @@ const ViewCart = () => {
 
   useEffect(() => {
     fetchCart();
-  }, [handleDelete]);
+  }, []);
 
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.quantity * item.itemId.pricePerUnit,
