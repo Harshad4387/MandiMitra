@@ -1,4 +1,4 @@
-import Navbar from "../components/NavBar";
+import Navbar from "../components/Navbar";
 import Sidebar from "../components/SideBar";
 import { Outlet } from "react-router-dom";
 
