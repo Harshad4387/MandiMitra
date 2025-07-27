@@ -31,6 +31,7 @@ import ViewOrdersPanel from "./pages/Supplier/ViewOrdersPanel.jsx";
 import RatingsAndReviews from "./pages/Supplier/RatingsAndReviews.jsx";
 import CustomersPage from "./pages/Supplier/ContactCustomer.jsx";
 import ProfilePage from "./pages/Supplier/ProfilePage.jsx";
+import GroqChatbot from "./pages/Vendor/GroqChatbot.jsx";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
@@ -70,6 +71,7 @@ const App = () => {
             <Route path="analytics" element={<Analytics />} />
             <Route path="support" element={<Support />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="chatbot" element={<GroqChatbot/>}/>
           </Route>
         )}
 

@@ -10,6 +10,7 @@ const menuItems = [
   { to: '/vendor/analytics', label: 'Analytics', icon: <BarChart2 size={18} /> },
   { to: '/vendor/support', label: 'Support', icon: <HelpCircle size={18} /> },
   { to: '/vendor/profile', label: 'Profile', icon: <User size={18} /> },
+  { to: '/vendor/chatbot', label: 'chatbot', icon: <User size={18} /> },
 ];
 
 const Sidebar = () => (
