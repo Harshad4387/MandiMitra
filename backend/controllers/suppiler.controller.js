@@ -79,21 +79,23 @@ const getSupplierOrders = async (req, res) => {
     const supplierId = req.user._id;
 
     const orders = await Order.find({ supplierId, status: 'pending' })
-      .populate('vendorId', 'name') 
-      .select('vendorId deliveryAddress items'); 
+      .populate('vendorId', 'name location') // Only fetch customer name
+      .select('vendorId deliveryAddress items'); // Only include needed fields
 
     const formattedOrders = orders.map(order => ({
       customerName: order.vendorId.name,
       deliveryAddress: order.deliveryAddress,
       latitude : order.vendorId.location.latitude,
-      longitude : order.vendorId.location.latitude,
+      longitude : order.vendorId.location.longitude,
       items: order.items.map(item => ({
         name: item.name,
         quantity: item.quantity,
         pricePerUnit: item.pricePerUnit,
         totalPrice: item.totalPrice
       }))
+      
     }));
+    console.log(formattedOrders)
 
     res.json(formattedOrders);
 
@@ -163,11 +165,15 @@ const getCustomersForSupplier = async (req, res) => {
           phone: vendor.phone,
           address: vendor.location, // or use `vendor.businessAddress` if relevant
           lastOrder: order,
-          orderCount: 1
+          orderCount: 1,
+          totalSpent: order.totalAmount || 0
         });
       } else {
         const existing = customerMap.get(vendor._id.toString());
         existing.orderCount += 1;
+
+        existing.totalSpent += order.totalAmount || 0;
+
       }
     });
 
