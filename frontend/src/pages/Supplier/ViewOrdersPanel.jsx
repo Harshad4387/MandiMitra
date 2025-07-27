@@ -9,6 +9,7 @@ const ViewOrdersPanel = () => {
   const fetchOrders = async () => {
     try {
       const res = await axiosInstance.get('/supplier/orders/pending')
+      console.log(res.data)
       setOrders(res.data)
     } catch (err) {
       setError('Failed to fetch orders')
@@ -19,7 +20,7 @@ const ViewOrdersPanel = () => {
 
   const updateOrderStatus = async (orderId, status) => {
     try {
-      await axiosInstance.patch(`/supplier/orders/${orderId}/status`, { status })
+      await axiosInstance.put(`/supplier/orders/${orderId}/status`, { status })
       fetchOrders()
     } catch (err) {
       alert('Failed to update status')
@@ -74,7 +75,7 @@ const ViewOrdersPanel = () => {
 
         <div className="space-y-6">
           {orders.map((order) => (
-            <div key={order._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-5xl w-full mx-auto hover:shadow-lg transition-all duration-300 hover:border-gray-300">
+            <div key={order.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-5xl w-full mx-auto hover:shadow-lg transition-all duration-300 hover:border-gray-300">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -133,12 +134,12 @@ const ViewOrdersPanel = () => {
                   </label>
                   <select
                     className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm hover:border-gray-400"
-                    onChange={(e) => updateOrderStatus(order._id, e.target.value)}
+                    onChange={(e) => updateOrderStatus(order.id, e.target.value)}
                     value={order.status}
                   >
                     <option value="Pending">⏳ Pending</option>
-                    <option value="Out for Delivery">🚚 Out for Delivery</option>
-                    <option value="Delivered">✅ Delivered</option>
+                    <option value="rejected">❌ Rejected</option>
+                    <option value="accepted">✅ Accepted</option>
                   </select>
                 </div>
               </div>

@@ -1,62 +1,75 @@
-import React from "react";
-import { useAuthStore } from "../../store/useAuthStore";
+import React, { useEffect, useState } from 'react'
+import { axiosInstance } from '../../lib/axios.js'
+import profilePic from '../../assets/profile.png'
 
-const Profile = () => {
-  const {authUser} = useAuthStore();
-  const user = authUser
+const ProfileField = ({ label, value }) => (
+  <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
+    <p className="text-sm font-semibold text-gray-500 capitalize">{label}</p>
+    <p className="text-md text-gray-800">{value || 'N/A'}</p>
+  </div>
+)
 
-  if (!user) {
-    return <div className="text-center text-red-500 mt-10">Not logged in</div>;
+const ProfileHeader = ({ user }) => (
+  <div className="flex flex-col items-center text-center sm:flex-row sm:text-left sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 pb-6 border-b border-gray-200">
+    <img
+      src={user.avatarUrl || profilePic}
+      alt="Profile"
+      className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
+    />
+    <div>
+      <h2 className="text-3xl font-bold text-gray-800">{user.name ?? 'N/A'}</h2>
+      <p className="text-md text-gray-500">{user.role || 'User'}</p>
+    </div>
+  </div>
+)
+
+const ProfileDetails = ({ user }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+    <ProfileField label="Name" value={user.name} />
+    <ProfileField label="Email" value={user.email} />
+    <ProfileField label="Phone Number" value={user.phone} />
+    <ProfileField label="Type of Food Sold" value={user.foodType} />
+  </div>
+)
+
+export default function ProfilePage() {
+  const [profile, setProfile] = useState(null)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axiosInstance.get('/auth/profile')
+        // console.log(res.data)
+        setProfile(res.data)
+      } catch (err) {
+        console.error('Failed to load profile:', err.message)
+        setError('Could not load profile data. Please try again later.')
+      }
+    }
+    fetchProfile()
+  }, [])
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="p-6 text-center text-red-500 bg-red-50 rounded-lg">{error}</div>
+      </div>
+    )
+  }
+
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="p-6 text-center text-gray-600">Loading profile...</div>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-white p-8">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="text-3xl font-semibold mb-8">Profile</h2>
-
-        <div className="flex flex-col md:flex-row items-center md:items-start bg-[#1b1b1b] p-6 rounded-2xl shadow-lg">
-          {/* Avatar */}
-          <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-gray-700 mb-6 md:mb-0 md:mr-10">
-            <img
-              src="https://cdn.dribbble.com/userupload/42550372/file/original-49d352bf1fc7a4c2a8ca4afba4f70d4f.png?resize=752x&vertical=center" // Replace with user's profile pic if available
-              alt="User Avatar"
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          {/* Bio & Details */}
-          <div className="flex-1">
-            <h3 className="text-2xl font-bold text-white">{user.name}</h3>
-            <p className="text-sm text-gray-400 mt-1">Vendor Profile</p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 text-sm text-gray-300">
-              <div>
-                <span className="text-gray-500">Email:</span>
-                <p>{user.email}</p>
-              </div>
-              <div>
-                <span className="text-gray-500">Phone:</span>
-                <p>{user.phone || "N/A"}</p>
-              </div>
-              <div>
-                <span className="text-gray-500">Location:</span>
-                <p>{user.location || "N/A"}</p>
-              </div>
-              <div>
-                <span className="text-gray-500">Food Type:</span>
-                <p>{user.foodType || "N/A"}</p>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <span className="text-gray-500">Role:</span>
-              <p className="text-green-400 font-medium">{user.role}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="max-w-3xl mx-auto p-6 sm:p-8 bg-white shadow-lg rounded-xl mt-10">
+      <ProfileHeader user={profile.user} />
+      <ProfileDetails user={profile.user} />
     </div>
-  );
-};
-
-export default Profile;
+  )
+}

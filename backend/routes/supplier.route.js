@@ -7,7 +7,7 @@ const {addItem , getSupplierOrders,
 
 router.post("/additem", verifyjwt , addItem);
 router.get("/orders/pending" ,verifyjwt ,getSupplierOrders);
-router.put("orders/:id/status" , verifyjwt ,updateOrderStatus);
+router.put("/orders/:id/status" , verifyjwt ,updateOrderStatus);
 router.put("/orders/:id/delivery" , verifyjwt ,updateDeliveryDetails);
 router.get("/customers", verifyjwt , getCustomersForSupplier);
 
