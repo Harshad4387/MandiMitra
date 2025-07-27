@@ -141,6 +141,47 @@ const updateDeliveryDetails = async (req, res) => {
   }
 };
 
+const getCustomersForSupplier = async (req, res) => {
+  try {
+    const supplierId = req.user._id;
+
+    // Find all orders where supplierId matches
+    const orders = await Order.find({ supplierId })
+      .populate('vendorId', 'name email phone location') // Only fetch selected fields from User
+      .sort({ placedAt: -1 }); // Sort by most recent
+
+    // Group orders by vendorId
+    const customerMap = new Map();
+
+    orders.forEach(order => {
+      const vendor = order.vendorId;
+      if (!customerMap.has(vendor._id.toString())) {
+        customerMap.set(vendor._id.toString(), {
+          _id: vendor._id,
+          name: vendor.name,
+          email: vendor.email,
+          phone: vendor.phone,
+          address: vendor.location, // or use `vendor.businessAddress` if relevant
+          lastOrder: order,
+          orderCount: 1
+        });
+      } else {
+        const existing = customerMap.get(vendor._id.toString());
+        existing.orderCount += 1;
+      }
+    });
+
+    const customers = Array.from(customerMap.values());
+
+    res.json(customers);
+  } catch (err) {
+    console.error('❌ Failed to get customers:', err);
+    res.status(500).json({ error: 'Failed to fetch customer data' });
+  }
+};
+
 module.exports = {addItem , getSupplierOrders,
   updateOrderStatus,
-  updateDeliveryDetails};
+  updateDeliveryDetails,getCustomersForSupplier};
+
+  
