@@ -5,12 +5,11 @@ const app = express();
 app.use(express.json());
 const cors = require("cors");
 
-// Fix this
+
 app.use(cors({
-  origin: "http://localhost:5173", // ✅ correct port
+  origin: "http://localhost:5173", 
   credentials: true
 }));
-
 
 const dbconnect  = require("./db/db.js");
 dbconnect();

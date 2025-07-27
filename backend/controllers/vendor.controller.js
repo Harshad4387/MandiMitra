@@ -136,4 +136,63 @@ const myorders = async (req, res) => {
   }
 };
 
-module.exports = { placeOrder, searchItemsByName, myorders };
+
+const PDFDocument = require('pdfkit');
+const { Readable } = require('stream');
+
+
+const generateBill = async (req, res) => {
+  try {
+    const vendorId = req.user._id;
+    const orderId = req.params.orderId;
+
+    const order = await Order.findOne({ _id: orderId, vendorId })
+      .populate("supplierId", "name email")
+      .populate("items.itemId", "name unit");
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    const doc = new PDFDocument();
+    const chunks = [];
+
+    // Collect PDF chunks
+    doc.on('data', chunk => chunks.push(chunk));
+    doc.on('end', () => {
+      const pdfBuffer = Buffer.concat(chunks);
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=bill-${orderId}.pdf`);
+      res.send(pdfBuffer);
+    });
+
+    // Generate PDF content
+    doc.fontSize(20).text("Vendor Order Bill", { align: 'center' }).moveDown();
+    doc.fontSize(12).text(`Order ID: ${order._id}`);
+    doc.text(`Supplier: ${order.supplierId?.ownername}`);
+    doc.text(`Supplier Email: ${order.supplierId?.email}`);
+    doc.text(`Delivery Method: ${order.deliveryMethod}`);
+    doc.text(`Delivery Address: ${order.deliveryAddress}`);
+    doc.text(`Order Date: ${order.placedAt.toLocaleString()}`);
+    doc.moveDown();
+
+    doc.fontSize(14).text("Items Ordered:");
+    doc.moveDown();
+    doc.fontSize(12);
+    order.items.forEach((item, index) => {
+      doc.text(`${index + 1}. ${item.name} (${item.itemId.unit}) - Quantity: ${item.quantity} x Rs${item.pricePerUnit} = Rs${item.totalPrice}`);
+    });
+
+    doc.moveDown();
+    doc.fontSize(14).text(`Total Amount: Rs${order.totalAmount}`, { align: 'right' });
+
+    doc.end();
+
+  } catch (err) {
+    console.error("Error generating bill:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
+module.exports = { placeOrder, searchItemsByName, myorders , generateBill};

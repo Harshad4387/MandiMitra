@@ -11,7 +11,7 @@ const generatejwt = async (userid , res)=>{
   sameSite: 'None', 
 };
 
-    res.cookie("jwt", token, options); 
+   res.cookie("jwt", token, options); 
     return token;
 };
 
