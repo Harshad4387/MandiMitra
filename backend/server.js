@@ -23,6 +23,13 @@ app.use((req, res, next) => {
   next();
 });
 
+
+app.get("/" , (req,res)=>{
+   res.send({
+    activestaus : true ,
+    message : "server is running"
+   })
+})
 const authroute = require("./routes/auth.route.js");
 app.use("/api/auth",authroute);
 
