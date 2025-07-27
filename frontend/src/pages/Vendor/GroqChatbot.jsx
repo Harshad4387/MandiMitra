@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { axiosInstance } from "../../lib/axios"; // adjust if needed
+import { axiosInstance } from "../../lib/axios";
 
 const GroqChatbot = () => {
   const [text, setText] = useState("");
@@ -36,7 +36,9 @@ const GroqChatbot = () => {
 
   return (
     <div style={styles.wrapper}>
-      <h2 style={styles.header}><strong>SupplySathi</strong> - Your Vendor Assistant 💡</h2>
+      <h2 style={styles.header}>
+        <strong>SupplySathi</strong> - Your Vendor Assistant 💡
+      </h2>
       <div style={styles.chatBox}>
         {messages.map((msg, i) => (
           <div
@@ -44,13 +46,18 @@ const GroqChatbot = () => {
             style={{
               ...styles.message,
               alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
-              backgroundColor: msg.sender === "user" ? "#b2dfdb" : "#f0ebe3",
+              backgroundColor: msg.sender === "user" ? "#e3f2fd" : "#ffffff",
+              border: msg.sender === "user" ? "1px solid #90caf9" : "1px solid #e0e0e0",
             }}
           >
             {msg.content}
           </div>
         ))}
-        {loading && <div style={{ ...styles.message, alignSelf: "flex-start" }}>Typing...</div>}
+        {loading && (
+          <div style={{ ...styles.message, alignSelf: "flex-start" }}>
+            Typing...
+          </div>
+        )}
       </div>
 
       <div style={styles.inputBox}>
@@ -59,7 +66,7 @@ const GroqChatbot = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type a message"
+          placeholder="Type a message..."
         />
         <button style={styles.sendButton} onClick={askGroq} disabled={loading}>
           Send
@@ -75,61 +82,67 @@ const styles = {
     margin: "40px auto",
     display: "flex",
     flexDirection: "column",
-    border: "1px solid #ccc",
-    borderRadius: "10px",
+    border: "1px solid #dcdcdc",
+    borderRadius: "12px",
     overflow: "hidden",
-    fontFamily: "sans-serif",
+    fontFamily: "Segoe UI, sans-serif",
     height: "600px",
-    background: "#f5f9f7", // soft ivory-green
+    background: "#f9f9f9",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
   },
   header: {
-    background: "#00695c", // deep teal
-    color: "white",
+    background: "#1976d2", // professional blue
+    color: "#ffffff",
     margin: 0,
-    padding: "12px",
+    padding: "14px",
     textAlign: "center",
     fontSize: "18px",
+    fontWeight: "600",
   },
   chatBox: {
     flex: 1,
-    padding: "10px",
+    padding: "12px",
     overflowY: "auto",
     display: "flex",
     flexDirection: "column",
-    gap: "10px",
-    backgroundColor: "#e0f2f1", // subtle greenish-blue
+    gap: "12px",
+    backgroundColor: "#f0f4f8",
   },
   message: {
-    maxWidth: "70%",
-    padding: "10px",
+    maxWidth: "75%",
+    padding: "10px 14px",
     borderRadius: "10px",
     wordWrap: "break-word",
-    boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+    backgroundColor: "#ffffff",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.07)",
   },
   inputBox: {
     display: "flex",
-    padding: "10px",
-    background: "#e8f5e9", // soft light green
-    borderTop: "1px solid #ccc",
+    padding: "12px",
+    background: "#ffffff",
+    borderTop: "1px solid #dcdcdc",
   },
   input: {
     flex: 1,
     resize: "none",
     borderRadius: "20px",
     border: "1px solid #ccc",
-    padding: "10px",
+    padding: "10px 14px",
     fontSize: "14px",
     outline: "none",
+    background: "#fefefe",
+    fontFamily: "inherit",
   },
   sendButton: {
     marginLeft: "10px",
-    backgroundColor: "#00796b", // slightly lighter teal
+    backgroundColor: "#1976d2",
     color: "white",
     border: "none",
     borderRadius: "20px",
-    padding: "10px 16px",
+    padding: "10px 18px",
     cursor: "pointer",
-    fontWeight: "bold",
+    fontWeight: "600",
+    fontSize: "14px",
   },
 };
 
