@@ -184,8 +184,86 @@ const getCustomersForSupplier = async (req, res) => {
   }
 };
 
+const getanalytics = async (req, res) => {
+  try {
+    const supplierId = req.user._id;
+
+    // 1. All orders of the supplier
+    const orders = await Order.find({ supplierId });
+
+    // 2. Total Orders
+    const totalOrders = orders.length;
+
+    // 3. Total Revenue
+    const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    // 4. Order Status Breakdown
+    const statusBreakdown = orders.reduce((acc, order) => {
+      acc[order.status] = (acc[order.status] || 0) + 1;
+      return acc;
+    }, {});
+
+    // 5. Revenue Over Time (Daily)
+    const revenueByDate = {};
+    orders.forEach(order => {
+      const date = new Date(order.placedAt).toISOString().split('T')[0];
+      revenueByDate[date] = (revenueByDate[date] || 0) + order.totalAmount;
+    });
+
+    // 6. Most Ordered Items
+    const itemQuantityMap = {};
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        itemQuantityMap[item.name] = (itemQuantityMap[item.name] || 0) + item.quantity;
+      });
+    });
+
+    const mostOrderedItems = Object.entries(itemQuantityMap)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([name, quantity]) => ({ name, quantity }));
+
+   
+    const supplierItems = await Item.find({ supplierId });
+    const itemIdToCategory = {};
+    supplierItems.forEach(item => {
+      itemIdToCategory[item._id.toString()] = item.category;
+    });
+
+    const categoryCount = {};
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        const category = itemIdToCategory[item.itemId?.toString()];
+        if (category) {
+          categoryCount[category] = (categoryCount[category] || 0) + item.quantity;
+        }
+      });
+    });
+
+    const categoryStats = Object.entries(categoryCount).map(([category, quantity]) => ({
+      category,
+      quantity
+    }));
+    return res.json({
+      totalOrders,
+      totalRevenue,
+      statusBreakdown,
+      revenueByDate,
+      mostOrderedItems,
+      categoryStats
+    });
+
+  } catch (error) {
+    console.error("Analytics error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
+
 module.exports = {addItem , getSupplierOrders,
   updateOrderStatus,
-  updateDeliveryDetails,getCustomersForSupplier};
+  updateDeliveryDetails,getCustomersForSupplier , getanalytics};
 
   
