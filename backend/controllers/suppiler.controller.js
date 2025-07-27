@@ -79,8 +79,8 @@ const getSupplierOrders = async (req, res) => {
     const supplierId = req.user._id;
 
     const orders = await Order.find({ supplierId, status: 'pending' })
-      .populate('vendorId', 'name') // Only fetch customer name
-      .select('vendorId deliveryAddress items'); // Only include needed fields
+      .populate('vendorId', 'name') 
+      .select('vendorId deliveryAddress items'); 
 
     const formattedOrders = orders.map(order => ({
       customerName: order.vendorId.name,
