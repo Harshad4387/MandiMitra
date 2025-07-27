@@ -41,6 +41,9 @@ app.use("/api/vendor/item", vendoritem);
 const vendorroute = require("./routes/vendor.route.js");
 app.use("/api/vendor",vendorroute);
 
+const chatbotroute= require("./routes/chat.route.js");
+app.use("/api/chatbot", chatbotroute);
+
 const port = process.env.PORT
 app.listen(port,'0.0.0.0', ()=>{
     console.log(`server is running on port ${port}`);

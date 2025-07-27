@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { axiosInstance } from '../../lib/axios';
 import StatCard from '../../components/supplier/StatCard';
-import RevenueChart from '../../components/Supplier/RevenueChart';
+import RevenueChart from '../../components/supplier/RevenueCharts';
 import StatusPieChart from '../../components/Supplier/StatusPieChart';
 import ItemBarChart from '../../components/Supplier/ItemBarChart';
 import CategoryPieChart from '../../components/Supplier/CategoryPieChart';

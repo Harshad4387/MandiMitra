@@ -1,5 +1,5 @@
 import Navbar from "../components/NavBar";
-import Sidebar from "../components/SupplierSideBar";
+import SupplierSidebar from "../components/SupplierSideBar";
 import { Outlet } from "react-router-dom";
 
 const SupplierLayout = () => {
@@ -7,7 +7,7 @@ const SupplierLayout = () => {
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <div className="w-64 bg-gray-100 fixed top-0 left-0 bottom-0 z-30 shadow-md">
-        <Sidebar />
+        <SupplierSidebar />
       </div>
 
       {/* Main Content Area */}

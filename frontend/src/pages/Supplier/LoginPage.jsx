@@ -77,17 +77,18 @@ const LoginPage = () => {
             {/* Submit */}
             <button
               type="submit"
-              className="btn btn-primary w-full hover:scale-[1.01] active:scale-100 transition-transform duration-200"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 active:scale-95 transition duration-200 flex items-center justify-center gap-2"
               disabled={isLoggingIn}
             >
               {isLoggingIn ? (
                 <>
-                  <Loader2 className="h-5 w-5 animate-spin mr-2" /> Signing in...
+                  <Loader2 className="h-5 w-5 animate-spin" /> Signing in...
                 </>
               ) : (
                 "Sign In"
               )}
             </button>
+
           </form>
 
           {/* Links */}

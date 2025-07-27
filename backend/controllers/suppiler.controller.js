@@ -258,12 +258,21 @@ const getanalytics = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+const getSupplierItems = async (req, res) => {
+  try {
+    const supplierId = req.user._id;
 
+    const items = await Item.find({ supplierId });
 
-
+    res.status(200).json({ items });
+  } catch (error) {
+    console.error("Error fetching supplier items:", error.message);
+    res.status(500).json({ error: "Server error while fetching items" });
+  }
+};
 
 module.exports = {addItem , getSupplierOrders,
   updateOrderStatus,
-  updateDeliveryDetails,getCustomersForSupplier , getanalytics};
+  updateDeliveryDetails,getCustomersForSupplier , getanalytics,getSupplierItems};
 
   

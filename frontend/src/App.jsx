@@ -8,13 +8,13 @@ import { useEffect } from "react";
 
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
-import VendorLoginPage from "./pages/Vendor/VendorLoginPage.jsx";
+
 import VendorSignUpPage from "./pages/Vendor/VendorSignUp.jsx";
-import SupplierLoginPage from "./pages/Supplier/LoginPage.jsx";
+
 import SupplierSignUpPage from "./pages/Supplier/SupplierSignUp.jsx";
 
 import VendorLayout from "./layouts/VenderLayout.jsx";
-import VendorDashboard from "./pages/Vendor/VendorHomePage.jsx";
+
 import SearchProduct from "./pages/Vendor/SearchProduct.jsx";
 import PlaceOrder from "./pages/Vendor/ViewCart.jsx";
 import MyOrders from "./pages/Vendor/MyOrders.jsx";
@@ -29,6 +29,7 @@ import ViewOrdersPanel from "./pages/Supplier/ViewOrdersPanel.jsx";
 import CustomersPage from "./pages/Supplier/ContactCustomer.jsx";
 import ProfilePage from "./pages/Supplier/ProfilePage.jsx";
 import ViewMyItems from './pages/Supplier/ViewMyItems';
+import GroqChatbot from "./pages/Vendor/GroqChatbot.jsx";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
@@ -66,6 +67,7 @@ const App = () => {
             <Route path="orders" element={<MyOrders />} />
             <Route path="support" element={<Support />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="chatbot" element={<GroqChatbot/>}/>
           </Route>
         )}
 

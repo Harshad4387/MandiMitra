@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { Home, Search, ShoppingCart, Gift, ClipboardList, BarChart2, HelpCircle, User, Phone, Package } from 'lucide-react';
 // import SearchProduct from './../pages/Vendor/SearchProduct';
 
-const Sidebar = () => {
+const SupplierSidebar = () => {
   const [showSupportDetails, setShowSupportDetails] = useState(false);
 
   const menuItems = [
@@ -76,4 +76,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default SupplierSidebar;

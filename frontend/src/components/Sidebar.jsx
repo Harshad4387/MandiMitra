@@ -17,12 +17,15 @@ const Sidebar = () => {
     { to: '/vendor/search', label: 'Search Product', icon: <Search size={18} /> },
     { to: '/vendor/order', label: 'View Cart', icon: <ShoppingCart size={18} /> },
     { to: '/vendor/orders', label: 'My Orders', icon: <ClipboardList size={18} /> },
+    { to: '/vendor/chatbot', label: 'chatbot', icon: <User size={18} /> },
+
   ];
 
   const staticItems = [
     { label: 'Support', icon: <HelpCircle size={18} />, onClick: () => setShowSupportDetails(!showSupportDetails) },
     { to: '/vendor/profile', label: 'Profile', icon: <User size={18} /> },
   ];
+
 
   return (
     <div className="w-64 h-screen bg-white shadow-lg p-6">
