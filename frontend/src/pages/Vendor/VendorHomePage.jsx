@@ -58,10 +58,15 @@ const VendorHomePage = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-extrabold text-green-700 tracking-tight">Instamart</h1>
-        <p className="text-sm text-gray-500">4 MINS delivery to your kitchen</p>
+      <div className="mb-12 text-center">
+        <h1 className="text-5xl md:text-6xl font-extrabold text-blue-600 tracking-wide drop-shadow-sm">
+          Mandi Mitra
+        </h1>
+        <p className="mt-2 text-base md:text-lg text-gray-600 italic">
+          Bazaar ka Asli Swaad, Ab Aapki Ungliyon Pe!
+        </p>
       </div>
+
 
       {Object.entries(data).map(([category, items]) => (
         <div key={category} className="mb-10">
@@ -69,11 +74,11 @@ const VendorHomePage = () => {
             {category}
           </h2>
 
-          {items.length === 0 ? (
+          {items.filter((item) => item.stock > 0).length === 0 ? (
             <p className="text-sm text-gray-400">No items available in this category.</p>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-              {items.map((item) => (
+              {items.filter((item) => item.stock > 0).map((item) => (
                 <div
                   key={item._id}
                   className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200"

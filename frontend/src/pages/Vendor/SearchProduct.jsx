@@ -82,11 +82,12 @@ const SearchProduct = () => {
       {/* Item grid */}
       {loading ? (
         <p className="text-gray-500">Loading...</p>
-      ) : items.length === 0 ? (
-        <p className="text-gray-500">No items found.</p>
+      ) : items.filter(item => item.stock > 0).length === 0 ? (
+        <p className="text-gray-500">No items in stock.</p>
+
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((item) => (
+          {items.filter(item => item.stock > 0).map((item) => (
             <div
               key={item._id}
               className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition"

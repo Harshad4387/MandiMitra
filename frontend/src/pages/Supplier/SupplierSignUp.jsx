@@ -125,7 +125,7 @@ const SupplierSignUpPage = () => {
 
           <button
             type="submit"
-            className="btn btn-primary w-full rounded-xl py-2.5 font-medium text-white"
+            className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-blue-700 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={isSigningUp}
           >
             {isSigningUp ? (

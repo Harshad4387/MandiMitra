@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Search, ShoppingCart, Gift, ClipboardList, BarChart2, HelpCircle, User, Phone } from 'lucide-react';
+import { Home, Search, ShoppingCart, Gift, ClipboardList, BarChart2, HelpCircle, User, Phone, Package } from 'lucide-react';
+// import SearchProduct from './../pages/Vendor/SearchProduct';
 
 const Sidebar = () => {
   const [showSupportDetails, setShowSupportDetails] = useState(false);
@@ -9,7 +10,7 @@ const Sidebar = () => {
     { to: '/supplier/dashboard', label: 'HomePage', icon: <Home size={18} /> },
     { to: '/supplier/add-item', label: 'Add Product', icon: <Search size={18} /> },
     { to: '/supplier/view-orders', label: 'View Orders', icon: <ShoppingCart size={18} /> },
-    { to: '/supplier/ratings-reviews', label: 'Ratings/Reviews', icon: <Gift size={18} /> },
+    { to: '/supplier/view-my-items', label: 'View My Items', icon: <Package size={18} /> },
     { to: '/supplier/contact-customer', label: 'Contact Customers', icon: <Phone size={18} /> },
   ];
 

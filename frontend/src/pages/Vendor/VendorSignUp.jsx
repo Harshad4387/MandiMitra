@@ -56,7 +56,7 @@ const VendorSignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10 overflow-y-auto">
       <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8 sm:p-10">
         {/* Header */}
         <div className="text-center mb-8">
@@ -70,7 +70,7 @@ const VendorSignUpPage = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-6 pb-10">
           {/* Full Name */}
           <FormGroup
             label="Full Name"
@@ -190,18 +190,19 @@ const VendorSignUpPage = () => {
           {/* Submit */}
           <button
             type="submit"
-            className="btn btn-primary w-full py-2.5 font-medium rounded-xl text-white"
+            className="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl shadow hover:bg-blue-700 transition duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={isSigningUp}
           >
             {isSigningUp ? (
-              <div className="flex items-center justify-center gap-2">
+              <>
                 <Loader2 className="size-5 animate-spin" />
                 Creating...
-              </div>
+              </>
             ) : (
               "Create Account"
             )}
           </button>
+
         </form>
 
         {/* Footer */}
@@ -216,6 +217,7 @@ const VendorSignUpPage = () => {
   );
 };
 
+// 🔁 Reusable Form Group
 const FormGroup = ({ label, icon, value, onChange, type = "text", placeholder, rightIcon }) => (
   <div className="form-control">
     <label className="label">

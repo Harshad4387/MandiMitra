@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useAuthStore } from "../../store/useAuthStore.js";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
+import loginPic from '../../assets/login.png';
+
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -104,13 +106,13 @@ const LoginPage = () => {
         {/* Right: Welcome Panel */}
         <div className="hidden md:flex items-center justify-center bg-blue-600 text-white p-10">
           <div className="space-y-6 text-center max-w-sm">
-            <h3 className="text-3xl font-semibold">Welcome to Mandi Mitra 🌾</h3>
+            <h3 className="text-3xl font-semibold">Welcome to Mandi Mitra </h3>
             <p className="text-sm leading-relaxed">
               Your trusted partner for a smarter mandi experience.  
               <br /><br />
               Whether you're a <b>Vendor</b> managing produce or a <b>Supplier</b> fulfilling demand, Mandi Mitra connects you to the right people and helps your business grow — all in one place.
             </p>
-            <img src="/illustrations/login.svg" alt="Login illustration" className="w-60 mx-auto mt-4" />
+            <img src={loginPic} alt="Login illustration" className="w-80 mx-auto mt-4" />
           </div>
         </div>
       </div>
