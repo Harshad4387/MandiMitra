@@ -1,5 +1,5 @@
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/SideBar";
+import Navbar from "../components/Navbar.jsx";
+import Sidebar from "../components/SideBar.jsx";
 import { Outlet } from "react-router-dom";
 
 const VendorLayout = () => {

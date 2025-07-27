@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Loader2, Trash, X } from "lucide-react";
-import { axiosInstance } from "../../lib/axios";
+import { axiosInstance } from "../../lib/axios.js";
 
 const ViewCart = () => {
   const [cartItems, setCartItems] = useState([]);

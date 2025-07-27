@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { axiosInstance } from "../../lib/axios";
+import { axiosInstance } from "../../lib/axios.js";
 
 const GroqChatbot = () => {
   const [text, setText] = useState("");
