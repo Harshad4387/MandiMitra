@@ -83,6 +83,7 @@ const getSupplierOrders = async (req, res) => {
       .select('vendorId deliveryAddress items'); // Only include needed fields
 
     const formattedOrders = orders.map(order => ({
+      id : order._id,
       customerName: order.vendorId.name,
       deliveryAddress: order.deliveryAddress,
       latitude : order.vendorId.location.latitude,
@@ -95,7 +96,6 @@ const getSupplierOrders = async (req, res) => {
       }))
       
     }));
-    console.log(formattedOrders)
 
     res.json(formattedOrders);
 
@@ -104,8 +104,6 @@ const getSupplierOrders = async (req, res) => {
     res.status(500).json({ error: 'Error fetching supplier orders' });
   }
 };
-
-
 const updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
